@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/Screens/Wrapped.dart';
+import 'package:flutter_application_1/Screens/wrapped.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 Future<void> main() async {
