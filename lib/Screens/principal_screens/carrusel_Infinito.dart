@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/Scripts/PrincipalScripts/boton_flecha.dart';
+import 'package:flutter_application_1/Logic/PrincipalScripts/boton_flecha.dart';
 
 class CarruselInfinito extends StatefulWidget {
   const CarruselInfinito({super.key});
