@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/Screens/pantalla_home_autenticada.dart';
-import 'package:flutter_application_1/Scripts/login/scripts.dart';
+import 'package:flutter_application_1/Logic/login/logic_login.dart';
+import 'package:flutter_application_1/Screens/usuario_screens/screen_usuario.dart';
 import 'package:flutter_application_1/Widgets/Colors.dart';
 import 'package:flutter_application_1/Widgets/Visual_utils.dart';
 import 'package:flutter_application_1/Widgets/app_inputs.dart';
@@ -13,7 +13,7 @@ class Login extends StatefulWidget {
 }
 
 class _LoginState extends State<Login> {
-  final logic = ScriptsLogin();
+  final logic = LogicLogin();
   bool mostrarPassword = true;
   bool isLoading = false;
 

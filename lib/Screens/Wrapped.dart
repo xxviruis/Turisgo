@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/Screens/pantalla_home_autenticada.dart';
-import 'package:flutter_application_1/Screens/PrincipalScreens/principal.dart';
+import 'package:flutter_application_1/Screens/principal_screens/principal.dart';
+import 'package:flutter_application_1/Screens/usuario_screens/screen_usuario.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 // Asumiendo que has definido 'final supabase = Supabase.instance.client;'
 

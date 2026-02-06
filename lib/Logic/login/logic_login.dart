@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/Services/AuthServices.dart';
 
-class ScriptsLogin {
+class LogicLogin {
   final _authService = AuthServices();
   final email = TextEditingController();
   final password = TextEditingController();

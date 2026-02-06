@@ -1,6 +1,6 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/Screens/PrincipalScreens/principal.dart';
+import 'package:flutter_application_1/Screens/principal_screens/principal.dart';
 import 'package:flutter_application_1/Widgets/colors.dart';
 
 class PantallaLogout extends StatefulWidget {

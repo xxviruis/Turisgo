@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/Screens/PrincipalScreens/carrusel_Infinito.dart';
-import 'package:flutter_application_1/Screens/PrincipalScreens/categorias_carrusel.dart';
-import 'package:flutter_application_1/Screens/PrincipalScreens/hotel_carrusel.dart';
-import 'package:flutter_application_1/Screens/PrincipalScreens/restaurante_carrusel.dart';
-import 'package:flutter_application_1/Scripts/PantallaSecundaria/scripts.dart';
+import 'package:flutter_application_1/Logic/usuario_logic/scripts.dart';
+import 'package:flutter_application_1/Screens/principal_screens/carrusel_Infinito.dart';
+import 'package:flutter_application_1/Screens/principal_screens/categorias_carrusel.dart';
+import 'package:flutter_application_1/Screens/principal_screens/hotel_carrusel.dart';
+import 'package:flutter_application_1/Screens/principal_screens/restaurante_carrusel.dart';
 
 class PantallaHomeAutenticada extends StatefulWidget {
   const PantallaHomeAutenticada({super.key});
