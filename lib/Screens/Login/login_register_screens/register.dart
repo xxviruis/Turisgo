@@ -3,9 +3,10 @@ import 'package:flutter/services.dart';
 import 'package:flutter_application_1/Screens/await_screen.dart';
 import 'package:flutter_application_1/Services/scripts.dart';
 import 'package:flutter_application_1/Widgets/Boton_carga.dart';
-import 'package:flutter_application_1/Widgets/colors.dart';
-import 'package:flutter_application_1/Widgets/Visual_utils.dart';
-import 'package:flutter_application_1/Widgets/app_inputs.dart'; // Importamos tu nueva función
+
+import 'package:flutter_application_1/Widgets/app_inputs.dart';
+import 'package:flutter_application_1/theme/colors.dart';
+import 'package:flutter_application_1/theme/visual_utils.dart'; // Importamos tu nueva función
 
 class Registrarse extends StatefulWidget {
   const Registrarse({super.key});

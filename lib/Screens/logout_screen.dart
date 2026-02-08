@@ -1,7 +1,7 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/Screens/principal_screens/principal.dart';
-import 'package:flutter_application_1/Widgets/colors.dart';
+import 'package:flutter_application_1/theme/colors.dart';
 
 class PantallaLogout extends StatefulWidget {
   const PantallaLogout({super.key});
