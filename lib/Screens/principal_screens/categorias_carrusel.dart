@@ -1,54 +1,74 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/Logic/PrincipalScripts/boton_flecha.dart';
+import 'package:flutter_application_1/Logic/principal_logic/boton_flecha.dart';
 
 class CategoriasCarrusel extends StatefulWidget {
-  const CategoriasCarrusel({super.key});
+  final VoidCallback? onHoteles;
+  final VoidCallback? onPaquetes;
+  final VoidCallback? onMoteles;
+  final VoidCallback? onCiudades;
+  final VoidCallback? onRestaurantes;
+
+  const CategoriasCarrusel({
+    super.key,
+    this.onHoteles,
+    this.onPaquetes,
+    this.onMoteles,
+    this.onCiudades,
+    this.onRestaurantes,
+  });
 
   @override
   State<CategoriasCarrusel> createState() => _CategoriasCarruselState();
 }
 
 class _CategoriasCarruselState extends State<CategoriasCarrusel> {
-  final ScrollController _controller = ScrollController();
+  late final ScrollController _controller;
+  late final List<_CategoriaItem> categorias;
 
-  final List<Map<String, String>> categorias = [
-    {
-      "titulo": "Hoteles",
-      "img":
-          "https://blog.tipranks.com/wp-content/uploads/2021/07/HST-750x406.jpg",
-    },
-    {
-      "titulo": "Paquetes",
-      "img":
-          "https://tmjuntos.com.br/wp-content/uploads/2019/09/Intercambio.jpg",
-    },
-    {"titulo": "Moteles", "img": "https://i.redd.it/v8j0obazgyt11.jpg"},
-    {
-      "titulo": "Ciudades",
-      "img":
-          "https://www.fodors.com/wp-content/uploads/2019/03/Hero_BogotaPartyCapitol_Heroshutterstock_1019031940.jpg",
-    },
-    {
-      "titulo": "Restaurante",
-      "img":
-          "https://wallpapers.com/images/hd/imagenesde-restaurantes-f5mhuvhh18esh0jd.jpg",
-    },
-  ];
-
-  late List<Map<String, String>> extendida;
+  // Para simular infinito
+  static const int loopMultiplier = 1000; // Cantidad grande para scroll infinito virtual
 
   @override
   void initState() {
     super.initState();
-    extendida = List.generate(40, (_) => categorias).expand((e) => e).toList();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _controller.jumpTo(_controller.position.maxScrollExtent / 2);
-    });
+
+    categorias = [
+      _CategoriaItem(
+        titulo: 'Hoteles',
+        img: 'assets/images/hotel.jpg',
+        onTap: widget.onHoteles,
+      ),
+      _CategoriaItem(
+        titulo: 'Paquetes',
+        img: 'assets/images/paquetes.jpg',
+        onTap: widget.onPaquetes,
+      ),
+      _CategoriaItem(
+        titulo: 'Moteles',
+        img: 'assets/images/motel.jpg',
+        onTap: widget.onMoteles,
+      ),
+      _CategoriaItem(
+        titulo: 'Ciudades',
+        img: 'assets/images/ciudades.jpg',
+        onTap: widget.onCiudades,
+      ),
+      _CategoriaItem(
+        titulo: 'Restaurantes',
+        img: 'assets/images/restaurante.jpg',
+        onTap: widget.onRestaurantes,
+      ),
+    ];
+
+    // Inicializamos el ScrollController en el medio de la "lista infinita"
+    _controller = ScrollController(
+      initialScrollOffset: categorias.length * loopMultiplier / 2 * 236, // 220 + 16 padding
+    );
   }
 
   void moverDerecha() {
     _controller.animateTo(
-      _controller.offset + 260,
+      _controller.offset + 236, // ancho + padding
       duration: const Duration(milliseconds: 300),
       curve: Curves.easeOut,
     );
@@ -56,7 +76,7 @@ class _CategoriasCarruselState extends State<CategoriasCarrusel> {
 
   void moverIzquierda() {
     _controller.animateTo(
-      _controller.offset - 260,
+      _controller.offset - 236,
       duration: const Duration(milliseconds: 300),
       curve: Curves.easeOut,
     );
@@ -71,52 +91,57 @@ class _CategoriasCarruselState extends State<CategoriasCarrusel> {
           ListView.builder(
             controller: _controller,
             scrollDirection: Axis.horizontal,
-            itemCount: extendida.length,
+            itemCount: categorias.length * loopMultiplier, // lista "infinita"
             itemBuilder: (_, index) {
-              final c = extendida[index];
-              return Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8),
-                child: Container(
-                  width: 220,
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(20),
-                    boxShadow: const [
-                      BoxShadow(
-                        color: Colors.black12,
-                        blurRadius: 5,
-                        offset: Offset(0, 3),
-                      ),
-                    ],
-                  ),
-                  child: Column(
-                    children: [
-                      ClipRRect(
-                        borderRadius: const BorderRadius.vertical(
-                          top: Radius.circular(20),
+              final c = categorias[index % categorias.length]; // repetimos elementos
+
+              return GestureDetector(
+                onTap: c.onTap,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8),
+                  child: Container(
+                    width: 220,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(20),
+                      boxShadow: const [
+                        BoxShadow(
+                          color: Colors.black12,
+                          blurRadius: 5,
+                          offset: Offset(0, 3),
                         ),
-                        child: Image.network(
-                          c["img"]!,
-                          width: 220,
-                          height: 160,
-                          fit: BoxFit.cover,
+                      ],
+                    ),
+                    child: Column(
+                      children: [
+                        ClipRRect(
+                          borderRadius: const BorderRadius.vertical(
+                            top: Radius.circular(20),
+                          ),
+                          child: Image.asset(
+                            c.img,
+                            width: 220,
+                            height: 160,
+                            fit: BoxFit.cover,
+                          ),
                         ),
-                      ),
-                      const SizedBox(height: 10),
-                      Text(
-                        c["titulo"]!,
-                        textAlign: TextAlign.center,
-                        style: const TextStyle(
-                          fontSize: 17,
-                          fontWeight: FontWeight.bold,
+                        const SizedBox(height: 10),
+                        Text(
+                          c.titulo,
+                          style: const TextStyle(
+                            fontSize: 17,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
               );
             },
           ),
+
+          // Botón izquierda
           Positioned(
             left: 0,
             top: 100,
@@ -125,6 +150,8 @@ class _CategoriasCarruselState extends State<CategoriasCarrusel> {
               onPressed: moverIzquierda,
             ),
           ),
+
+          // Botón derecha
           Positioned(
             right: 0,
             top: 100,
@@ -137,4 +164,22 @@ class _CategoriasCarruselState extends State<CategoriasCarrusel> {
       ),
     );
   }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+}
+
+class _CategoriaItem {
+  final String titulo;
+  final String img;
+  final VoidCallback? onTap;
+
+  _CategoriaItem({
+    required this.titulo,
+    required this.img,
+    this.onTap,
+  });
 }

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/Screens/pantalla_logout.dart';
+import 'package:flutter_application_1/Screens/logout_screen.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 // ignore: camel_case_types

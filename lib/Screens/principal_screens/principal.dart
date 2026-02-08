@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/Screens/Login.dart';
-import 'package:flutter_application_1/Screens/PrincipalScreens/carrusel_Infinito.dart';
-import 'package:flutter_application_1/Screens/PrincipalScreens/categorias_carrusel.dart';
-import 'package:flutter_application_1/Screens/PrincipalScreens/hotel_carrusel.dart';
-import 'package:flutter_application_1/Screens/PrincipalScreens/restaurante_carrusel.dart';
-import 'package:flutter_application_1/Screens/registrarse.dart';
+import 'package:flutter_application_1/Screens/Login/login_register_screens/login.dart';
+import 'package:flutter_application_1/Screens/Login/login_register_screens/register.dart';
+import 'package:flutter_application_1/Screens/principal_screens/carrusel_Infinito.dart';
+import 'package:flutter_application_1/Screens/principal_screens/categorias_carrusel.dart';
+import 'package:flutter_application_1/Screens/principal_screens/hotel_carrusel.dart';
+import 'package:flutter_application_1/Screens/principal_screens/restaurante_carrusel.dart';
+import 'package:flutter_application_1/Screens/principal_screens/ciudades_carrusel.dart';
+import 'package:flutter_application_1/Screens/principal_screens/paquetes_carrusel.dart';
+import 'package:flutter_application_1/Screens/principal_screens/motel_carrusel.dart';
 
 class PantallaPrincipal extends StatefulWidget {
   const PantallaPrincipal({super.key});
@@ -14,6 +17,28 @@ class PantallaPrincipal extends StatefulWidget {
 }
 
 class _PantallaPrincipalState extends State<PantallaPrincipal> {
+
+  // 🔹 AGREGADO
+  final ScrollController _scrollController = ScrollController();
+
+  final GlobalKey _ciudadesKey = GlobalKey();
+  final GlobalKey _paquetesKey = GlobalKey();
+  final GlobalKey _hotelesKey = GlobalKey();
+  final GlobalKey _restaurantesKey = GlobalKey();
+  final GlobalKey _motelesKey = GlobalKey();
+
+  void _scrollTo(GlobalKey key) {
+    final context = key.currentContext;
+    if (context != null) {
+      Scrollable.ensureVisible(
+        context,
+        duration: const Duration(milliseconds: 500),
+        curve: Curves.easeInOut,
+      );
+    }
+  }
+  // 🔹 FIN AGREGADO
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -35,11 +60,7 @@ class _PantallaPrincipalState extends State<PantallaPrincipal> {
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(
-                    builder: (context) {
-                      return Registrarse();
-                    },
-                  ),
+                  MaterialPageRoute(builder: (_) => Registrarse()),
                 );
               },
               child: Text("Registrarse", style: TextStyle(color: Colors.black)),
@@ -58,11 +79,7 @@ class _PantallaPrincipalState extends State<PantallaPrincipal> {
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(
-                    builder: (context) {
-                      return Login();
-                    },
-                  ),
+                  MaterialPageRoute(builder: (_) => Login()),
                 );
               },
               child: Text(
@@ -73,13 +90,16 @@ class _PantallaPrincipalState extends State<PantallaPrincipal> {
           ),
         ],
       ),
+
       body: SingleChildScrollView(
+        controller: _scrollController, // 🔹 AGREGADO
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const SizedBox(height: 16),
+
               TextField(
                 decoration: InputDecoration(
                   hintText: "¿A dónde quieres ir?",
@@ -96,13 +116,22 @@ class _PantallaPrincipalState extends State<PantallaPrincipal> {
                   ),
                 ),
               ),
+
               const SizedBox(height: 25),
               const Text(
                 "Categorías",
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
               ),
               const SizedBox(height: 10),
-              const CategoriasCarrusel(),
+
+              CategoriasCarrusel(
+                onCiudades: () => _scrollTo(_ciudadesKey),
+                onPaquetes: () => _scrollTo(_paquetesKey),
+                onHoteles: () => _scrollTo(_hotelesKey),
+                onRestaurantes: () => _scrollTo(_restaurantesKey),
+                onMoteles: () => _scrollTo(_motelesKey),
+              ),
+
               const SizedBox(height: 30),
               const Text(
                 "Recomendado para ti",
@@ -110,20 +139,50 @@ class _PantallaPrincipalState extends State<PantallaPrincipal> {
               ),
               const SizedBox(height: 10),
               const CarruselInfinito(),
+
               const SizedBox(height: 30),
               const Text(
-                "Hoteles populares",
+                "",
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 10),
-              HotelesCarrusel(),
+              Container(key: _ciudadesKey, child: CiudadesCarrusel()),
+
               const SizedBox(height: 30),
               const Text(
-                "Restaurantes recomendados",
+                "",
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 10),
-              RestaurantesCarrusel(),
+              Container(key: _paquetesKey, child: PaquetesCarrusel()),
+
+              const SizedBox(height: 30),
+              const Text(
+                "",
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 10),
+              Container(key: _hotelesKey, child: HotelesCarrusel()),
+
+              const SizedBox(height: 30),
+              const Text(
+                "",
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 10),
+              Container(
+                key: _restaurantesKey,
+                child: RestaurantesCarrusel(),
+              ),
+
+              const SizedBox(height: 30),
+              const Text(
+                "",
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 10),
+              Container(key: _motelesKey, child: MotelesCarrusel()),
+
               const SizedBox(height: 50),
             ],
           ),

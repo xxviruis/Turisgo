@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/Logic/login/logic_login.dart';
 import 'package:flutter_application_1/Screens/usuario_screens/screen_usuario.dart';
-import 'package:flutter_application_1/Widgets/Colors.dart';
-import 'package:flutter_application_1/Widgets/Visual_utils.dart';
 import 'package:flutter_application_1/Widgets/app_inputs.dart';
+import 'package:flutter_application_1/theme/colors.dart';
+import 'package:flutter_application_1/theme/visual_utils.dart';
 
 class Login extends StatefulWidget {
   const Login({super.key});
