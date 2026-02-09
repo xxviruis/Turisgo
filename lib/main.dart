@@ -1,17 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/Screens/wrapped.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:flutter_application_1/l10n/generated/app_localizations.dart';
+import 'package:flutter_localizations/flutter_localizations.dart'; // Añade esta línea
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   await Supabase.initialize(
     url: "https://jssaanajelfxnjyjqceq.supabase.co",
-    anonKey:
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Impzc2FhbmFqZWxmeG5qeWpxY2VxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQxNDUwMzAsImV4cCI6MjA3OTcyMTAzMH0.FFR-5zZlIzGybC5cMrfpRn_RdgOjfNbM4h_IxWLEXws",
+    anonKey: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...", // Tu clave completa
     authOptions: const FlutterAuthClientOptions(
       autoRefreshToken: true,
-      authFlowType: AuthFlowType.pkce, // importante para Web
+      authFlowType: AuthFlowType.pkce,
     ),
   );
 
@@ -24,7 +25,19 @@ class Principal extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: WrapperScreen(),
+      locale: const Locale('en'),
+      // Configuración de idiomas (Delegados)
+      localizationsDelegates: const [
+        AppLocalizations.delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      // Idiomas que soporta TurisGo
+      supportedLocales: AppLocalizations.supportedLocales,
+
+      // Pantalla inicial
+      home: const WrapperScreen(),
       debugShowCheckedModeBanner: false,
     );
   }
