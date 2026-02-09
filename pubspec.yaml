@@ -11,13 +11,14 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-
+  flutter_localizations:
+    sdk: flutter
   cupertino_icons: ^1.0.8
   supabase_flutter: ^2.8.0
   go_router: ^17.0.0
   flutter_riverpod: ^2.5.1
   flutter_dotenv: ^5.1.0
-  intl: ^0.19.0
+  intl: ^0.20.2
   url_launcher: ^6.3.0
   image_picker: ^1.1.2
   cached_network_image: ^3.3.1
@@ -32,6 +33,7 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+  generate: true
 
   assets:
     - assets/images/
@@ -39,4 +41,3 @@ flutter:
     - assets/images/motel/
     - assets/images/restaurantes/
     - assets/images/ciudades/
-
