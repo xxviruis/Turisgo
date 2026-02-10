@@ -1,8 +1,8 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_application_1/Screens/wrapped.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:flutter_application_1/l10n/generated/app_localizations.dart';
-import 'package:flutter_localizations/flutter_localizations.dart'; // Añade esta línea
+  import 'package:flutter/material.dart';
+  import 'package:flutter_application_1/Screens/wrapped.dart';
+  import 'package:supabase_flutter/supabase_flutter.dart';
+  import 'package:flutter_application_1/l10n/generated/app_localizations.dart';
+  import 'package:flutter_localizations/flutter_localizations.dart'; // Añade esta línea
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -25,7 +25,7 @@ class Principal extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      locale: const Locale('en'),
+      locale: const Locale('es'),
       // Configuración de idiomas (Delegados)
       localizationsDelegates: const [
         AppLocalizations.delegate,
