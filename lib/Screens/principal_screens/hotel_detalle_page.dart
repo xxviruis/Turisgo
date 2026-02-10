@@ -1,14 +1,34 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/Widgets/booking_calendar.dart';
+import 'package:flutter_application_1/Widgets/booking_price_box.dart';
 import 'package:flutter_application_1/utils/servicios_icons.dart';
 import 'galeria_fotos_hotel.dart';
 
-class HotelDetallePage extends StatelessWidget {
+class HotelDetallePage extends StatefulWidget {
   final Map<String, dynamic> hotel;
 
   const HotelDetallePage({super.key, required this.hotel});
 
   @override
+  State<HotelDetallePage> createState() => _HotelDetallePageState();
+}
+
+class _HotelDetallePageState extends State<HotelDetallePage> {
+  int noches = 0;
+  double total = 0;
+
+  // ✅ Limpia noches y total
+  void _clearBooking() {
+    setState(() {
+      noches = 0;
+      total = 0;
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final hotel = widget.hotel;
+
     final List<String> imagenes =
         List<String>.from(hotel["imagenes"] ?? []);
 
@@ -181,6 +201,33 @@ class HotelDetallePage extends StatelessWidget {
                         fontSize: 16,
                         height: 1.5,
                       ),
+                    ),
+
+                    const SizedBox(height: 40),
+
+                    // ================= BOOKING =================
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Expanded(
+                          child: BookingCalendar(
+                            precios:
+                                Map<String, int>.from(hotel["precios"] ?? {}),
+                            onChanged: (ini, fin, n, t) {
+                              setState(() {
+                                noches = n;
+                                total = t;
+                              });
+                            },
+                          ),
+                        ),
+                        const SizedBox(width: 24),
+                        BookingPriceBox(
+                          noches: noches,
+                          total: total,
+                          onClearDates: _clearBooking,
+                        ),
+                      ],
                     ),
                   ],
                 ),
