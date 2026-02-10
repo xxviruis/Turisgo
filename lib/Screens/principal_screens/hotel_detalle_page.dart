@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/utils/servicios_icons.dart';
+import 'galeria_fotos_hotel.dart';
 
 class HotelDetallePage extends StatelessWidget {
   final Map<String, dynamic> hotel;
@@ -7,85 +9,199 @@ class HotelDetallePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final List<String> imagenes =
+        List<String>.from(hotel["imagenes"] ?? []);
+
+    final List<String> servicios =
+        List<String>.from(hotel["servicios"] ?? []);
+
+    final String descripcion = hotel["descripcion"] ?? "Sin descripción";
+
+    while (imagenes.length < 8) {
+      imagenes.add(imagenes.isNotEmpty ? imagenes[0] : hotel["img"]);
+    }
+
     return Scaffold(
-      appBar: AppBar(
-        title: Text(hotel["nombre"]),
-      ),
+      backgroundColor: const Color(0xFFF5F5F5),
+      appBar: AppBar(title: Text(hotel["nombre"])),
       body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // IMAGEN PRINCIPAL
-            Image.asset(
-              hotel["img"],
-              width: double.infinity,
-              height: 250,
-              fit: BoxFit.cover,
-            ),
+        child: Center(
+          child: Column(
+            children: [
+              const SizedBox(height: 24),
 
-            const SizedBox(height: 16),
-
-            // INFO
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    hotel["nombre"],
-                    style: const TextStyle(
-                      fontSize: 22,
-                      fontWeight: FontWeight.bold,
+              // ================= COLLAGE =================
+              SizedBox(
+                width: 1100,
+                child: Column(
+                  children: [
+                    SizedBox(
+                      height: 260,
+                      child: Row(
+                        children: [
+                          Expanded(flex: 7, child: _img(imagenes[0])),
+                          const SizedBox(width: 8),
+                          Expanded(
+                            flex: 3,
+                            child: Column(
+                              children: [
+                                Expanded(child: _img(imagenes[1])),
+                                const SizedBox(height: 8),
+                                Expanded(child: _img(imagenes[2])),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                  const SizedBox(height: 6),
-                  Text(
-                    "⭐ ${hotel["puntuacion"]} • ${hotel["ubicación"]}",
-                    style: const TextStyle(fontSize: 15),
-                  ),
-
-                  const SizedBox(height: 16),
-
-                  const Text(
-                    "Descripción",
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
+                    const SizedBox(height: 8),
+                    SizedBox(
+                      height: 110,
+                      child: Row(
+                        children: List.generate(5, (index) {
+                          if (index == 4) {
+                            return Expanded(
+                              child: GestureDetector(
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (_) =>
+                                          GaleriaFotos(images: imagenes),
+                                    ),
+                                  );
+                                },
+                                child: Stack(
+                                  children: [
+                                    _img(imagenes[7]),
+                                    Container(
+                                      decoration: BoxDecoration(
+                                        color: Colors.black.withOpacity(0.6),
+                                        borderRadius:
+                                            BorderRadius.circular(12),
+                                      ),
+                                      alignment: Alignment.center,
+                                      child: Text(
+                                        "+${imagenes.length - 8} fotos",
+                                        style: const TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            );
+                          }
+                          return Expanded(
+                            child: Padding(
+                              padding: const EdgeInsets.only(right: 8),
+                              child: _img(imagenes[index + 3]),
+                            ),
+                          );
+                        }),
+                      ),
                     ),
-                  ),
-                  const SizedBox(height: 8),
-                  const Text(
-                    "Este hotel ofrece habitaciones cómodas, excelente ubicación, "
-                    "servicio de calidad y todas las comodidades necesarias para "
-                    "una estancia placentera.",
-                    style: TextStyle(fontSize: 14),
-                  ),
-
-                  const SizedBox(height: 20),
-
-                  const Text(
-                    "Precios desde",
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  const Text(
-                    "\$180.000 COP / noche",
-                    style: TextStyle(
-                      fontSize: 16,
-                      color: Colors.green,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-
-                  const SizedBox(height: 30),
-                ],
+                  ],
+                ),
               ),
-            ),
-          ],
+
+              const SizedBox(height: 40),
+
+              // ================= INFO =================
+              SizedBox(
+                width: 1100,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      hotel["nombre"],
+                      style: const TextStyle(
+                        fontSize: 26,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      "⭐ ${hotel["puntuacion"]} • ${hotel["ubicación"]}",
+                      style: const TextStyle(fontSize: 16),
+                    ),
+
+                    const SizedBox(height: 32),
+
+                    // ================= SERVICIOS =================
+                    const Text(
+                      "Servicios más populares",
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+
+                    const SizedBox(height: 16),
+
+                    Wrap(
+                      spacing: 24,
+                      runSpacing: 16,
+                      children: servicios.map((servicio) {
+                        return Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(
+                              ServiciosIconos.getIcono(servicio),
+                              size: 22,
+                              color: Colors.blueGrey,
+                            ),
+                            const SizedBox(width: 8),
+                            Text(
+                              servicio.toUpperCase(),
+                              style: const TextStyle(fontSize: 15),
+                            ),
+                          ],
+                        );
+                      }).toList(),
+                    ),
+
+                    const SizedBox(height: 32),
+
+                    // ================= DESCRIPCIÓN =================
+                    const Text(
+                      "Descripción",
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      descripcion,
+                      style: const TextStyle(
+                        fontSize: 16,
+                        height: 1.5,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+
+              const SizedBox(height: 60),
+            ],
+          ),
         ),
+      ),
+    );
+  }
+
+  Widget _img(String img) {
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(12),
+      child: Image.asset(
+        img,
+        fit: BoxFit.cover,
+        width: double.infinity,
+        height: double.infinity,
       ),
     );
   }
