@@ -8,6 +8,7 @@ import 'package:flutter_application_1/Screens/principal_screens/restaurante_carr
 import 'package:flutter_application_1/Screens/principal_screens/ciudades_carrusel.dart';
 import 'package:flutter_application_1/Screens/principal_screens/paquetes_carrusel.dart';
 import 'package:flutter_application_1/Screens/principal_screens/motel_carrusel.dart';
+import 'package:flutter_application_1/l10n/generated/app_localizations.dart';
 
 class PantallaPrincipal extends StatefulWidget {
   const PantallaPrincipal({super.key});
@@ -17,10 +18,7 @@ class PantallaPrincipal extends StatefulWidget {
 }
 
 class _PantallaPrincipalState extends State<PantallaPrincipal> {
-
-  // 🔹 AGREGADO
   final ScrollController _scrollController = ScrollController();
-
   final GlobalKey _ciudadesKey = GlobalKey();
   final GlobalKey _paquetesKey = GlobalKey();
   final GlobalKey _hotelesKey = GlobalKey();
@@ -37,93 +35,69 @@ class _PantallaPrincipalState extends State<PantallaPrincipal> {
       );
     }
   }
-  // 🔹 FIN AGREGADO
 
   @override
   Widget build(BuildContext context) {
+    // 🔹 OBTENER TRADUCCIONES
+    final l10n = AppLocalizations.of(context)!;
+
     return Scaffold(
       backgroundColor: Colors.grey[100],
       appBar: AppBar(
-        title: Center(child: const Text('TURISGO')),
+        title: const Text(
+          'TURISGO',
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
+        centerTitle: true,
         backgroundColor: Colors.blue,
+        elevation: 0,
         actions: [
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: TextButton(
-              style: TextButton.styleFrom(
-                side: BorderSide(color: Colors.white),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadiusGeometry.circular(10),
-                ),
-                backgroundColor: Colors.white,
-              ),
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (_) => Registrarse()),
-                );
-              },
-              child: Text("Registrarse", style: TextStyle(color: Colors.black)),
+          _buildAppBarButton(
+            text: l10n.registrarse, // 🔹 TRADUCIDO
+            onPressed: () => Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => Registrarse()),
             ),
           ),
-          Padding(
-            padding: EdgeInsetsGeometry.directional(),
-            child: TextButton(
-              style: TextButton.styleFrom(
-                side: BorderSide(color: Colors.white),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadiusGeometry.circular(10),
-                ),
-                backgroundColor: Colors.white,
-              ),
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (_) => Login()),
-                );
-              },
-              child: Text(
-                "Iniciar Sesion",
-                style: TextStyle(color: Colors.black),
-              ),
+          _buildAppBarButton(
+            text: l10n.iniciarSesion, // 🔹 TRADUCIDO
+            onPressed: () => Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => Login()),
             ),
           ),
         ],
       ),
-
       body: SingleChildScrollView(
-        controller: _scrollController, // 🔹 AGREGADO
+        controller: _scrollController,
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const SizedBox(height: 16),
-
+              // Buscador
               TextField(
                 decoration: InputDecoration(
-                  hintText: "¿A dónde quieres ir?",
+                  hintText: l10n.dondeQuieresIr, // 🔹 TRADUCIDO
                   prefixIcon: const Icon(Icons.search),
                   filled: true,
                   fillColor: Colors.white,
-                  contentPadding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 14,
-                  ),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
                     borderSide: BorderSide.none,
                   ),
                 ),
               ),
-
               const SizedBox(height: 25),
-              const Text(
-                "Categorías",
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+              Text(
+                l10n.categorias, // 🔹 TRADUCIDO
+                style: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 18,
+                ),
               ),
               const SizedBox(height: 10),
-
               CategoriasCarrusel(
                 onCiudades: () => _scrollTo(_ciudadesKey),
                 onPaquetes: () => _scrollTo(_paquetesKey),
@@ -131,63 +105,61 @@ class _PantallaPrincipalState extends State<PantallaPrincipal> {
                 onRestaurantes: () => _scrollTo(_restaurantesKey),
                 onMoteles: () => _scrollTo(_motelesKey),
               ),
-
               const SizedBox(height: 30),
-              const Text(
-                "Recomendado para ti",
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              Text(
+                l10n.recomendadoParaTi, // 🔹 TRADUCIDO
+                style: const TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
               const SizedBox(height: 10),
               const CarruselInfinito(),
 
-              const SizedBox(height: 30),
-              const Text(
-                "",
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 10),
-              Container(key: _ciudadesKey, child: CiudadesCarrusel()),
-
-              const SizedBox(height: 30),
-              const Text(
-                "",
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 10),
-              Container(key: _paquetesKey, child: PaquetesCarrusel()),
-
-              const SizedBox(height: 30),
-              const Text(
-                "",
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 10),
-              Container(key: _hotelesKey, child: HotelesCarrusel()),
-
-              const SizedBox(height: 30),
-              const Text(
-                "",
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 10),
-              Container(
-                key: _restaurantesKey,
-                child: RestaurantesCarrusel(),
-              ),
-
-              const SizedBox(height: 30),
-              const Text(
-                "",
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 10),
-              Container(key: _motelesKey, child: MotelesCarrusel()),
+              // Carruseles de categorías (se mantienen con sus llaves)
+              _sectionSpacer(_ciudadesKey, CiudadesCarrusel()),
+              _sectionSpacer(_paquetesKey, PaquetesCarrusel()),
+              _sectionSpacer(_hotelesKey, HotelesCarrusel()),
+              _sectionSpacer(_restaurantesKey, RestaurantesCarrusel()),
+              _sectionSpacer(_motelesKey, MotelesCarrusel()),
 
               const SizedBox(height: 50),
             ],
           ),
         ),
       ),
+    );
+  }
+
+  // 🏛️ SOLID: Extraemos widgets repetitivos para limpiar el build
+  Widget _buildAppBarButton({
+    required String text,
+    required VoidCallback onPressed,
+  }) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 8),
+      child: TextButton(
+        style: TextButton.styleFrom(
+          backgroundColor: Colors.white,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
+        ),
+        onPressed: onPressed,
+        child: Text(
+          text,
+          style: const TextStyle(color: Colors.black, fontSize: 12),
+        ),
+      ),
+    );
+  }
+
+  Widget _sectionSpacer(GlobalKey key, Widget child) {
+    return Column(
+      children: [
+        const SizedBox(height: 30),
+        Container(key: key, child: child),
+      ],
     );
   }
 }
