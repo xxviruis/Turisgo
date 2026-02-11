@@ -5,8 +5,8 @@ import 'package:flutter_application_1/utils/servicios_icons.dart';
 import 'galeria_fotos_hotel.dart';
 
 class HotelDetallePage extends StatefulWidget {
+  
   final Map<String, dynamic> hotel;
-
   const HotelDetallePage({super.key, required this.hotel});
 
   @override
@@ -16,6 +16,7 @@ class HotelDetallePage extends StatefulWidget {
 class _HotelDetallePageState extends State<HotelDetallePage> {
   int noches = 0;
   double total = 0;
+  final GlobalKey<BookingCalendarState> _calendarKey = GlobalKey();
 
   // ✅ Limpia noches y total
   void _clearBooking() {
@@ -211,22 +212,31 @@ class _HotelDetallePageState extends State<HotelDetallePage> {
                       children: [
                         Expanded(
                           child: BookingCalendar(
-                            precios:
-                                Map<String, int>.from(hotel["precios"] ?? {}),
-                            onChanged: (ini, fin, n, t) {
-                              setState(() {
-                                noches = n;
-                                total = t;
-                              });
-                            },
-                          ),
+  key: _calendarKey,
+  precios: Map<String, int>.from(hotel["precios"] ?? {}),
+  onChanged: (ini, fin, n, t) {
+    setState(() {
+      noches = n;
+      total = t;
+    });
+  },
+),
+
                         ),
                         const SizedBox(width: 24),
                         BookingPriceBox(
-                          noches: noches,
-                          total: total,
-                          onClearDates: _clearBooking,
-                        ),
+  noches: noches,
+  total: total,
+  onClearDates: () {
+    _calendarKey.currentState?.limpiarFechas(); // 🔥 limpia visual
+    setState(() {
+      noches = 0;
+      total = 0;
+    });
+  },
+),
+
+
                       ],
                     ),
                   ],
