@@ -13,13 +13,38 @@ class BookingCalendar extends StatefulWidget {
   });
 
   @override
-  State<BookingCalendar> createState() => _BookingCalendarState();
+  State<BookingCalendar> createState() => BookingCalendarState();
 }
 
-class _BookingCalendarState extends State<BookingCalendar> {
+class BookingCalendarState extends State<BookingCalendar> {
   DateTime? _inicio;
   DateTime? _fin;
-  DateTime _focusedDay = DateTime(2026, 2, 9);
+
+  DateTime get _hoy {
+    final now = DateTime.now();
+    return DateTime(now.year, now.month, now.day);
+  }
+
+  late DateTime _focusedDay = _hoy;
+
+  @override
+  void initState() {
+    super.initState();
+    // 🔥 Ningún día seleccionado al iniciar
+    _inicio = null;
+    _fin = null;
+  }
+
+  // 🔹 Limpia selección desde afuera
+  void limpiarFechas() {
+    setState(() {
+      _inicio = null;
+      _fin = null;
+      _focusedDay = _hoy;
+    });
+
+    widget.onChanged(null, null, 0, 0);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -31,71 +56,59 @@ class _BookingCalendarState extends State<BookingCalendar> {
         child: TableCalendar(
           locale: 'es_ES',
           focusedDay: _focusedDay,
-          firstDay: DateTime(2026, 2, 9),
-          lastDay: DateTime(2026, 3, 31),
+
+          // 🔥 Bloquea días pasados, permite hoy
+          firstDay: _hoy,
+          lastDay: DateTime(2027, 12, 31),
+
           rangeSelectionMode: RangeSelectionMode.enforced,
           rangeStartDay: _inicio,
           rangeEndDay: _fin,
-          availableGestures: AvailableGestures.horizontalSwipe,
+
+          enabledDayPredicate: (day) {
+            final d = DateTime(day.year, day.month, day.day);
+            return !d.isBefore(_hoy);
+          },
+
           headerStyle: const HeaderStyle(
             titleCentered: true,
             formatButtonVisible: false,
-            leftChevronIcon: Icon(Icons.chevron_left),
-            rightChevronIcon: Icon(Icons.chevron_right),
           ),
-          daysOfWeekStyle: const DaysOfWeekStyle(
-            weekendStyle: TextStyle(color: Colors.redAccent),
+
+          // ❌ SIN todayDecoration → hoy no se pinta
+          calendarStyle: const CalendarStyle(
+            disabledTextStyle: TextStyle(color: Colors.grey),
           ),
-          calendarStyle: CalendarStyle(
-            todayDecoration: BoxDecoration(
-              color: Colors.blue.shade100,
-              shape: BoxShape.circle,
-            ),
-            rangeStartDecoration: const BoxDecoration(
-              color: Colors.blue,
-              shape: BoxShape.circle,
-            ),
-            rangeEndDecoration: const BoxDecoration(
-              color: Colors.blue,
-              shape: BoxShape.circle,
-            ),
-            withinRangeDecoration: BoxDecoration(
-              color: Colors.blue.withOpacity(0.15),
-              shape: BoxShape.circle,
-            ),
-          ),
+
           calendarBuilders: CalendarBuilders(
+            // 🔥 Hoy se pinta igual que un día normal
+            todayBuilder: (context, day, _) {
+              return _buildDay(day);
+            },
+
             defaultBuilder: (context, day, _) {
-              final key = DateFormat('yyyy-MM-dd').format(day);
-              final precio = widget.precios[key];
+              final d = DateTime(day.year, day.month, day.day);
 
-              if (precio == null) return null;
-
-              return Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
+              if (d.isBefore(_hoy)) {
+                return Center(
+                  child: Text(
                     '${day.day}',
-                    style: const TextStyle(fontWeight: FontWeight.bold),
+                    style: const TextStyle(color: Colors.grey),
                   ),
-                  const SizedBox(height: 4),
-                  Text(
-                    '\$${NumberFormat.compact(locale: 'es').format(precio)}',
-                    style: const TextStyle(
-                      fontSize: 11,
-                      color: Colors.green,
-                    ),
-                  ),
-                ],
-              );
+                );
+              }
+
+              return _buildDay(day);
             },
           ),
+
           onRangeSelected: (start, end, focusedDay) {
             setState(() {
               _inicio = start;
               _fin = end;
               _focusedDay = focusedDay;
             });
+
             _calcularTotal();
           },
         ),
@@ -103,8 +116,40 @@ class _BookingCalendarState extends State<BookingCalendar> {
     );
   }
 
+  Widget _buildDay(DateTime day) {
+    final key = DateFormat('yyyy-MM-dd').format(day);
+    final precio = widget.precios[key];
+
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Text(
+          '${day.day}',
+          style: const TextStyle(fontWeight: FontWeight.bold),
+        ),
+        if (precio != null) ...[
+          const SizedBox(height: 4),
+          Text(
+            NumberFormat.currency(
+              locale: "es_CO",
+              symbol: "",
+              decimalDigits: 0,
+            ).format(precio),
+            style: const TextStyle(
+              fontSize: 11,
+              color: Colors.green,
+            ),
+          ),
+        ],
+      ],
+    );
+  }
+
   void _calcularTotal() {
-    if (_inicio == null || _fin == null) return;
+    if (_inicio == null || _fin == null) {
+      widget.onChanged(null, null, 0, 0);
+      return;
+    }
 
     double total = 0;
     int noches = 0;
