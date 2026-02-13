@@ -1,42 +1,66 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/Screens/principal_screens/principal.dart';
-import 'package:flutter_application_1/Screens/usuario_screens/screen_usuario.dart';
+import 'package:flutter_application_1/Screens/admin_screens/admin_dashboard.dart';
+import 'package:flutter_application_1/Screens/admin_screens/admin_negocios_screens.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-// Asumiendo que has definido 'final supabase = Supabase.instance.client;'
-
-// Importa tus pantallas
+// Importa tus pantallas reales
+import 'package:flutter_application_1/Screens/principal_screens/principal.dart';
+import 'package:flutter_application_1/Screens/usuario_screens/screen_usuario.dart'; // Tu nueva pantalla admin
 
 class WrapperScreen extends StatelessWidget {
   const WrapperScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    // 1. Escucha los cambios en el estado de autenticación de Supabase.
-    return StreamBuilder<AuthState>(
-      stream: Supabase.instance.client.auth.onAuthStateChange,
+    final supabase = Supabase.instance.client;
 
+    return StreamBuilder<AuthState>(
+      stream: supabase.auth.onAuthStateChange,
       builder: (context, snapshot) {
-        // --- Manejo de la Conexión ---
+        // 1. Manejo de carga inicial de la sesión
         if (snapshot.connectionState == ConnectionState.waiting) {
-          // Mientras se carga la sesión inicial.
           return const Scaffold(
             body: Center(child: CircularProgressIndicator()),
           );
         }
 
-        // --- Manejo del Estado de Autenticación ---
-        final AuthState? authState = snapshot.data;
+        final session = snapshot.data?.session;
 
-        // Comprobamos si la sesión es nula.
-        // Si session es null, o si la sesión existe pero el evento es SIGNED_OUT,
-        // consideramos que el usuario no está autenticado.
-        if (authState == null || authState.session == null) {
-          // El usuario NO está logueado.
+        // 2. Si no hay sesión, mandamos a la pantalla principal (Login/Bienvenida)
+        if (session == null) {
           return const PantallaPrincipal();
-        } else {
-          // El usuario SÍ está logueado (session no es nula).
-          return const PantallaHomeAutenticada();
         }
+
+        // 3. ¡SESIÓN DETECTADA! Ahora verificamos el ROL en la tabla 'perfiles'
+        return FutureBuilder<Map<String, dynamic>?>(
+          // Consultamos la tabla 'perfiles' usando el ID del usuario actual
+          future: supabase
+              .from('perfiles')
+              .select('rol')
+              .eq('id', session.user.id)
+              .maybeSingle(), // Usamos maybeSingle por seguridad
+          builder: (context, rolSnapshot) {
+            // Mientras consulta la base de datos
+            if (rolSnapshot.connectionState == ConnectionState.waiting) {
+              return const Scaffold(
+                body: Center(child: CircularProgressIndicator()),
+              );
+            }
+
+            // Si hay un error o no se encuentra el perfil, por defecto mandamos a usuario normal
+            if (rolSnapshot.hasError || rolSnapshot.data == null) {
+              return const PantallaHomeAutenticada();
+            }
+
+            final String rol = rolSnapshot.data!['rol'] ?? 'user';
+
+            // 4. REDIRECCIÓN SEGÚN ROL (SOLID: Lógica de negocio clara)
+            if (rol == 'admin') {
+              return const AdminDashboard(); // Pantalla de Admin que creamos
+            } else {
+              return const PantallaHomeAutenticada(); // Pantalla de Usuario normal
+            }
+          },
+        );
       },
     );
   }
