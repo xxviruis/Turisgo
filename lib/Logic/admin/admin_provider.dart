@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/Services/admin_repository.dart';
+import 'package:flutter_application_1/features/auth/domain/repositories/admin_repository.dart';
 import 'package:flutter_application_1/models/negocio_model.dart';
 
 class AdminProvider extends ChangeNotifier {
