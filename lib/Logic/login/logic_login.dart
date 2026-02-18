@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/Services/AuthServices.dart';
+import 'package:flutter_application_1/features/auth/data/services/authservices.dart';
 
 class LogicLogin {
   final _authService = AuthServices();

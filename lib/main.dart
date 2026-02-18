@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart'; // 1. IMPORTANTE
-import 'package:flutter_application_1/Services/supabase_service_admin.dart';
+import 'package:flutter_application_1/features/auth/data/services/supabase_service_admin.dart';
 import 'package:provider/provider.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:flutter_application_1/Screens/wrapped.dart';

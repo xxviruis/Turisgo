@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/Screens/usuario_screens/screen_usuario.dart';
-import 'package:flutter_application_1/Services/scripts.dart';
+import 'package:flutter_application_1/features/auth/data/services/loginservices.dart';
 import 'package:flutter_application_1/theme/colors.dart'; // Tus constantes de color
 import 'package:supabase_flutter/supabase_flutter.dart';
 
