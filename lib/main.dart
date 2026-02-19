@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart'; // 1. IMPORTANTE
+import 'package:flutter_application_1/core/routher/Wrapped.dart';
 import 'package:flutter_application_1/features/auth/data/services/supabase_service_admin.dart';
 import 'package:provider/provider.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:flutter_application_1/Screens/wrapped.dart';
 import 'package:flutter_application_1/l10n/generated/app_localizations.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 // Importa tus servicios y providers
-import 'package:flutter_application_1/Logic/admin/admin_provider.dart';
+import 'package:flutter_application_1/features/usuario/domain/usecases/admin/admin_provider.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();

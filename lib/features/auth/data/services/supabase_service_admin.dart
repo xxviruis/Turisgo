@@ -1,6 +1,6 @@
 import 'package:flutter_application_1/features/auth/domain/repositories/admin_repository.dart';
-import 'package:flutter_application_1/models/negocio_model.dart';
-import 'package:flutter_application_1/models/usuario_model.dart';
+import 'package:flutter_application_1/features/usuario/data/models/negocio_model.dart';
+import 'package:flutter_application_1/features/auth/data/models/usuario_model.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class SupabaseAdminService implements IAdminRepository {
