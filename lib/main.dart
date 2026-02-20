@@ -1,12 +1,19 @@
-import 'package:flutter/material.dart'; // 1. IMPORTANTE
-import 'package:flutter_application_1/core/routher/Wrapped.dart';
-import 'package:flutter_application_1/features/auth/data/services/supabase_service_admin.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_application_1/core/routher/router.dart';
+import 'package:flutter_application_1/features/auth/domain/usecases/get_current_user_usecase.dart';
+import 'package:flutter_application_1/features/auth/domain/usecases/login_usecase.dart';
 import 'package:provider/provider.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:flutter_application_1/l10n/generated/app_localizations.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-// Importa tus servicios y providers
-import 'package:flutter_application_1/features/usuario/domain/usecases/admin/admin_provider.dart';
+import 'package:flutter_application_1/l10n/generated/app_localizations.dart';
+
+// AUTH
+import 'features/auth/data/datasource/auth_dao.dart';
+import 'features/auth/data/repositories/auth_repository_impl.dart';
+
+// ADMIN
+import 'features/auth/data/services/supabase_service_admin.dart';
+import 'features/usuario/domain/usecases/admin/admin_provider.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -14,24 +21,26 @@ Future<void> main() async {
   await Supabase.initialize(
     url: "https://jssaanajelfxnjyjqceq.supabase.co",
     anonKey:
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Impzc2FhbmFqZWxmeG5qeWpxY2VxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQxNDUwMzAsImV4cCI6MjA3OTcyMTAzMH0.FFR-5zZlIzGybC5cMrfpRn_RdgOjfNbM4h_IxWLEXws", // Mantén tu key aquí
-    authOptions: const FlutterAuthClientOptions(
-      autoRefreshToken: true,
-      authFlowType: AuthFlowType.pkce,
-    ),
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Impzc2FhbmFqZWxmeG5qeWpxY2VxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQxNDUwMzAsImV4cCI6MjA3OTcyMTAzMH0.FFR-5zZlIzGybC5cMrfpRn_RdgOjfNbM4h_IxWLEXws",
   );
 
+  final supabaseClient = Supabase.instance.client;
+
+  // 🔹 AUTH
+  final authDAO = AuthDAO(supabaseClient);
+  final authRepository = AuthRepositoryImpl(authDAO);
+  final loginUseCase = LoginUseCase(authRepository);
+  final getCurrentUserUseCase = GetCurrentUserUseCase(authRepository);
+
   runApp(
-    // 2. Envolvemos la app con MultiProvider (SOLID: Inyección de dependencias)
     MultiProvider(
       providers: [
+        Provider<LoginUseCase>.value(value: loginUseCase),
+        Provider<GetCurrentUserUseCase>.value(value: getCurrentUserUseCase),
+
         ChangeNotifierProvider(
-          create: (_) => AdminProvider(
-            repository:
-                (SupabaseAdminService()), // Le pasamos la implementación de Supabase
-          ),
+          create: (_) => AdminProvider(repository: SupabaseAdminService()),
         ),
-        // Aquí puedes añadir más providers en el futuro (UserProvider, etc.)
       ],
       child: const Principal(),
     ),
@@ -43,7 +52,10 @@ class Principal extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    final router = createRouter(context);
+
+    return MaterialApp.router(
+      routerConfig: router,
       locale: const Locale('es'),
       localizationsDelegates: const [
         AppLocalizations.delegate,
@@ -52,7 +64,6 @@ class Principal extends StatelessWidget {
         GlobalCupertinoLocalizations.delegate,
       ],
       supportedLocales: AppLocalizations.supportedLocales,
-      home: const WrapperScreen(),
       debugShowCheckedModeBanner: false,
     );
   }
