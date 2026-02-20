@@ -5,7 +5,6 @@ import 'package:flutter_application_1/core/utils/servicios_icons.dart';
 import 'galeria_fotos_hotel.dart';
 
 class HotelDetallePage extends StatefulWidget {
-  
   final Map<String, dynamic> hotel;
   const HotelDetallePage({super.key, required this.hotel});
 
@@ -30,11 +29,9 @@ class _HotelDetallePageState extends State<HotelDetallePage> {
   Widget build(BuildContext context) {
     final hotel = widget.hotel;
 
-    final List<String> imagenes =
-        List<String>.from(hotel["imagenes"] ?? []);
+    final List<String> imagenes = List<String>.from(hotel["imagenes"] ?? []);
 
-    final List<String> servicios =
-        List<String>.from(hotel["servicios"] ?? []);
+    final List<String> servicios = List<String>.from(hotel["servicios"] ?? []);
 
     final String descripcion = hotel["descripcion"] ?? "Sin descripción";
 
@@ -98,8 +95,7 @@ class _HotelDetallePageState extends State<HotelDetallePage> {
                                     Container(
                                       decoration: BoxDecoration(
                                         color: Colors.black.withOpacity(0.6),
-                                        borderRadius:
-                                            BorderRadius.circular(12),
+                                        borderRadius: BorderRadius.circular(12),
                                       ),
                                       alignment: Alignment.center,
                                       child: Text(
@@ -198,10 +194,7 @@ class _HotelDetallePageState extends State<HotelDetallePage> {
                     const SizedBox(height: 8),
                     Text(
                       descripcion,
-                      style: const TextStyle(
-                        fontSize: 16,
-                        height: 1.5,
-                      ),
+                      style: const TextStyle(fontSize: 16, height: 1.5),
                     ),
 
                     const SizedBox(height: 40),
@@ -212,31 +205,31 @@ class _HotelDetallePageState extends State<HotelDetallePage> {
                       children: [
                         Expanded(
                           child: BookingCalendar(
-  key: _calendarKey,
-  precios: Map<String, int>.from(hotel["precios"] ?? {}),
-  onChanged: (ini, fin, n, t) {
-    setState(() {
-      noches = n;
-      total = t;
-    });
-  },
-),
-
+                            key: _calendarKey,
+                            precios: Map<String, int>.from(
+                              hotel["precios"] ?? {},
+                            ),
+                            onChanged: (ini, fin, n, t) {
+                              setState(() {
+                                noches = n;
+                                total = t;
+                              });
+                            },
+                          ),
                         ),
                         const SizedBox(width: 24),
                         BookingPriceBox(
-  noches: noches,
-  total: total,
-  onClearDates: () {
-    _calendarKey.currentState?.limpiarFechas(); // 🔥 limpia visual
-    setState(() {
-      noches = 0;
-      total = 0;
-    });
-  },
-),
-
-
+                          noches: noches,
+                          total: total,
+                          onClearDates: () {
+                            _calendarKey.currentState
+                                ?.limpiarFechas(); // 🔥 limpia visual
+                            setState(() {
+                              noches = 0;
+                              total = 0;
+                            });
+                          },
+                        ),
                       ],
                     ),
                   ],

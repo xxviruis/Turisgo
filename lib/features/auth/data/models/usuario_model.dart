@@ -1,16 +1,12 @@
-class UsuarioModel {
-  final String id;
-  final String email;
-  final String nombre;
-  final String rol;
-  final bool activo;
+import 'package:flutter_application_1/features/auth/domain/entities/user_entity.dart';
 
-  UsuarioModel({
-    required this.id,
-    required this.email,
-    required this.nombre,
-    required this.rol,
-    this.activo = true,
+class UsuarioModel extends UserEntity {
+  const UsuarioModel({
+    required super.id,
+    required super.email,
+    required super.nombre,
+    required super.rol,
+    required super.activo,
   });
 
   factory UsuarioModel.fromMap(Map<String, dynamic> map) {
@@ -21,5 +17,15 @@ class UsuarioModel {
       rol: map['rol'] ?? 'user',
       activo: map['activo'] ?? true,
     );
+  }
+
+  Map<String, dynamic> toMap() {
+    return {
+      'id': id,
+      'email': email,
+      'nombre': nombre,
+      'rol': rol,
+      'activo': activo,
+    };
   }
 }

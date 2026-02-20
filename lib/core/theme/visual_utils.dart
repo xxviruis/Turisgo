@@ -11,6 +11,7 @@ class VisualUtils {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
+          elevation: 10, // Added elevation for modern shadow
           backgroundColor: whiteColor,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(20),
