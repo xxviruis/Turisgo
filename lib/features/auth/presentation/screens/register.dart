@@ -268,6 +268,31 @@ class _RegistrarseState extends State<Registrarse>
                                 validator: logic.passwordValidator,
                               ),
 
+                              AppSpacing.h18,
+                              TextFormField(
+                                controller: logic.txtConfirmPassword,
+                                obscureText: _mostrarPassword,
+                                decoration:
+                                    inputStyle(
+                                      label: "Confirmar Contraseña",
+                                      icon: Icons.lock_outline,
+                                    ).copyWith(
+                                      suffixIcon: IconButton(
+                                        onPressed: () => setState(
+                                          () => _mostrarPassword =
+                                              !_mostrarPassword,
+                                        ),
+                                        icon: Icon(
+                                          _mostrarPassword
+                                              ? Icons.visibility_off
+                                              : Icons.visibility,
+                                          color: kTealColor,
+                                        ),
+                                      ),
+                                    ),
+                                validator: logic.passwordValidator,
+                              ),
+
                               AppSpacing.h35,
 
                               /// 🔥 BOTÓN DINÁMICO

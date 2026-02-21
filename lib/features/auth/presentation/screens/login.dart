@@ -2,10 +2,8 @@ import 'dart:ui'; // Necesario para ImageFilter (Glassmorphism)
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/core/theme/app_spacing.dart';
 import 'package:flutter_application_1/features/auth/domain/usecases/login_usecase.dart';
-import 'package:flutter_application_1/features/usuario/domain/usecases/login/logic_login.dart';
 import 'package:flutter_application_1/core/theme/colors.dart';
 import 'package:flutter_application_1/core/theme/visual_utils.dart';
-import 'package:flutter_application_1/features/usuario/presentation/screen_usuario.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
@@ -423,7 +421,7 @@ class _LoginState extends State<Login> {
                     color: kWhiteColor,
                     size: 22,
                   ),
-                  onPressed: () => Navigator.maybePop(context),
+                  onPressed: () => context.pop(),
                   tooltip: "Regresar",
                 ),
               ),

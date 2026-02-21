@@ -26,6 +26,19 @@ class AdminDashboard extends StatelessWidget {
             child: const Icon(Icons.person, color: Colors.indigo),
           ),
           const SizedBox(width: 20),
+          ElevatedButton(
+            onPressed: () async {
+              await Supabase.instance.client.auth.signOut();
+              context.go('/login');
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.redAccent,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20),
+              ),
+            ),
+            child: const Text('Cerrar Sesión'),
+          ),
         ],
       ),
       body: LayoutBuilder(
