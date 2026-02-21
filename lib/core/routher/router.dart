@@ -1,59 +1,63 @@
-import 'package:flutter/material.dart';
+import 'package:flutter_application_1/core/routher/auth_notifier.dart';
 import 'package:flutter_application_1/features/admin/presentation/admin_screens/admin_dashboard.dart';
 import 'package:flutter_application_1/features/auth/domain/usecases/get_current_user_usecase.dart';
+import 'package:flutter_application_1/features/auth/presentation/screens/forgot_password_screen.dart';
 import 'package:flutter_application_1/features/auth/presentation/screens/login.dart';
 import 'package:flutter_application_1/features/principal/principal_screens/principal.dart';
 import 'package:flutter_application_1/features/usuario/presentation/screen_usuario.dart';
 import 'package:go_router/go_router.dart';
-import 'package:provider/provider.dart';
-import '../../features/auth/domain/entities/user_entity.dart';
 
 // 🔹 Importa tus pantallas reales aquí
 
-GoRouter createRouter(BuildContext context) {
-  final getCurrentUserUseCase = Provider.of<GetCurrentUserUseCase>(
-    context,
-    listen: false,
-  );
-
+GoRouter createRouter(
+  GetCurrentUserUseCase getCurrentUserUseCase,
+  AuthNotifier authNotifier,
+) {
   return GoRouter(
+    refreshListenable: authNotifier,
     initialLocation: '/',
-
     redirect: (context, state) async {
       final user = await getCurrentUserUseCase.execute();
+      final location = state.fullPath;
 
-      final isRoot = state.fullPath == '/';
-      final isLogin = state.fullPath == '/login';
-      final isAdminRoute = state.fullPath == '/admin';
-      final isHomeRoute = state.fullPath == '/home';
+      final isPublicRoute =
+          location == '/' ||
+          location == '/login' ||
+          location == '/forgot-password';
 
-      // 🔴 No autenticado
       if (user == null) {
-        if (isRoot) return null; // Deja ver PantallaPrincipal
-        return isLogin ? null : '/login';
+        return isPublicRoute ? null : '/login';
       }
 
-      // 🔴 Bloqueado
       if (!user.activo) {
         return '/login';
       }
 
-      // 👑 Admin
       if (user.rol == 'admin') {
-        if (isRoot || isHomeRoute) return '/admin';
-        return null;
+        if (location == '/' || location == '/home') {
+          return '/admin';
+        }
       }
 
-      // 🧑‍💼 Prestador
       if (user.rol == 'prestador') {
-        if (isRoot || isAdminRoute) return '/home';
-        return null;
+        if (location == '/' || location == '/admin') {
+          return '/home';
+        }
       }
 
       return null;
     },
+
     routes: [
+      GoRoute(
+        path: '/',
+        builder: (context, state) => const PantallaPrincipal(),
+      ),
       GoRoute(path: '/login', builder: (context, state) => const Login()),
+      GoRoute(
+        path: '/forgot-password',
+        builder: (context, state) => ForgotPasswordScreen(),
+      ),
       GoRoute(
         path: '/home',
         builder: (context, state) => const PantallaHomeAutenticada(),
@@ -61,10 +65,6 @@ GoRouter createRouter(BuildContext context) {
       GoRoute(
         path: '/admin',
         builder: (context, state) => const AdminDashboard(),
-      ),
-      GoRoute(
-        path: '/',
-        builder: (context, state) => const PantallaPrincipal(),
       ),
     ],
   );

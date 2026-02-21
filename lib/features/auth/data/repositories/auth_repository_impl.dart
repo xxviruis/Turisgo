@@ -32,4 +32,30 @@ class AuthRepositoryImpl implements AuthRepository {
 
     return usuario;
   }
+
+  @override
+  Future<void> confirmPasswordReset({
+    required String email,
+    required String code,
+    required String newPassword,
+  }) async {
+    final response = await dao.verifyOTP(email, code);
+    if (response.session != null) {
+      await dao.updateUserPassword(newPassword);
+      await dao.signOut(); // Cerrar sesión después de cambiar la contraseña
+    } else {
+      // Si el código es incorrecto o expiró, lanzamos una excepción clara
+      throw Exception("El código de verificación es incorrecto o ha expirado.");
+    }
+  }
+
+  Future<void> sendPasswordResetCode(String email) async {
+    try {
+      // Supabase envía el código o link automáticamente al correo
+      await dao.sendResetPasswordEmail(email);
+    } catch (e) {
+      // Lanzamos el error para que el controlador lo capture en el catch y muestre el mensaje
+      throw Exception("Error al enviar el código: $e");
+    }
+  }
 }

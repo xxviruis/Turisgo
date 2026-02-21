@@ -4,4 +4,12 @@ abstract class AuthRepository {
   Future<UserEntity?> getCurrentUser();
   Future<void> login(String email, String password);
   Future<void> logout();
+
+  // Nuevos métodos para SOLID
+  Future<void> sendPasswordResetCode(String email);
+  Future<void> confirmPasswordReset({
+    required String email,
+    required String code,
+    required String newPassword,
+  });
 }

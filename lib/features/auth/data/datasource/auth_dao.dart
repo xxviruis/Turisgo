@@ -24,4 +24,23 @@ class AuthDAO {
         .eq('id', userId)
         .maybeSingle();
   }
+
+  // Nuevo: Enviar el correo de recuperación
+  Future<void> sendResetPasswordEmail(String email) async {
+    await client.auth.resetPasswordForEmail(email);
+  }
+
+  // Nuevo: Verificar el token de 6 dígitos
+  Future<AuthResponse> verifyOTP(String email, String token) async {
+    return await client.auth.verifyOTP(
+      email: email,
+      token: token,
+      type: OtpType.recovery,
+    );
+  }
+
+  // Nuevo: Cambiar la contraseña (requiere sesión activa tras verifyOTP)
+  Future<void> updateUserPassword(String newPassword) async {
+    await client.auth.updateUser(UserAttributes(password: newPassword));
+  }
 }
