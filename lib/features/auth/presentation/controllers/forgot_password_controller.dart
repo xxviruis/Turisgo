@@ -1,72 +1,106 @@
-// features/auth/presentation/controllers/forgot_password_controller.dart
+import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/features/auth/domain/repositories/auth_repository.dart';
+import 'package:flutter_application_1/features/auth/domain/usecases/send_otp_usecase.dart';
+import 'package:flutter_application_1/features/auth/domain/usecases/verify_otp_usecase.dart';
 
-enum ForgotPasswordStatus { initial, loading, codeSent, success, error }
+enum ForgotStatus { initial, loading, codeSent, success, error }
 
 class ForgotPasswordController extends ChangeNotifier {
-  final AuthRepository _repository;
+  final SendOtpUseCase sendOtpUseCase;
+  final VerifyOtpUseCase verifyOtpUseCase;
 
-  ForgotPasswordController(this._repository);
+  ForgotPasswordController({
+    required this.sendOtpUseCase,
+    required this.verifyOtpUseCase,
+  });
 
-  ForgotPasswordStatus status = ForgotPasswordStatus.initial;
+  static const int _cooldownDuration = 60;
+
+  ForgotStatus status = ForgotStatus.initial;
   String? errorMessage;
+  int cooldownSeconds = 0;
 
-  /// Limpia el error y decide el estado previo
-  void reset() {
-    // Si estamos en error, volvemos a 'codeSent' para que el usuario
-    // siga viendo el formulario del PIN pero sin el color rojo.
-    if (status == ForgotPasswordStatus.error) {
-      status = ForgotPasswordStatus.codeSent;
-    } else {
-      // Si no hay error, es que el usuario quiere volver al inicio (paso 1)
-      status = ForgotPasswordStatus.initial;
-    }
-    errorMessage = null;
-    notifyListeners();
+  Timer? _cooldownTimer;
+
+  bool get isLoading => status == ForgotStatus.loading;
+  bool get isCodeSent => status == ForgotStatus.codeSent;
+  bool get isCooldownActive => cooldownSeconds > 0;
+
+  @override
+  void dispose() {
+    _cooldownTimer?.cancel();
+    super.dispose();
   }
 
-  // Paso 1: Enviar Email
   Future<void> sendCode(String email) async {
-    _updateStatus(ForgotPasswordStatus.loading);
+    if (!_isValidEmail(email)) {
+      _setError("Por favor, ingresa un correo válido.");
+      return;
+    }
+
     try {
-      await _repository.sendPasswordResetCode(email);
-      _updateStatus(ForgotPasswordStatus.codeSent);
+      _setStatus(ForgotStatus.loading);
+      await sendOtpUseCase(email);
+      _setStatus(ForgotStatus.codeSent);
+      _startCooldown();
     } catch (e) {
-      _handleError("No pudimos enviar el correo. Revisa tu conexión.");
+      _setError(_parseError(e));
     }
   }
 
-  // Paso 2: Verificar y Cambiar
-  Future<bool> verifyAndReset(
-    String email,
-    String code,
-    String newPassword,
-  ) async {
-    _updateStatus(ForgotPasswordStatus.loading);
+  Future<void> verifyAndReset({
+    required String email,
+    required String code,
+    required String newPassword,
+  }) async {
     try {
-      await _repository.confirmPasswordReset(
+      _setStatus(ForgotStatus.loading);
+      await verifyOtpUseCase(
         email: email,
         code: code,
         newPassword: newPassword,
       );
-      _updateStatus(ForgotPasswordStatus.success);
-      return true;
+      _setStatus(ForgotStatus.success);
     } catch (e) {
-      _handleError("Código incorrecto o expirado.");
-      return false;
+      _setError(_parseError(e));
     }
   }
 
-  void _updateStatus(ForgotPasswordStatus newStatus) {
-    status = newStatus;
+  void reset() {
+    _cooldownTimer?.cancel();
+    cooldownSeconds = 0;
     errorMessage = null;
+    _setStatus(ForgotStatus.initial);
+  }
+
+  // ---------------------------------------------------------------------------
+  // Private helpers
+  // ---------------------------------------------------------------------------
+
+  void _setStatus(ForgotStatus newStatus) {
+    status = newStatus;
     notifyListeners();
   }
 
-  void _handleError(String message) {
+  void _setError(String message) {
     errorMessage = message;
-    status = ForgotPasswordStatus.error;
-    notifyListeners();
+    _setStatus(ForgotStatus.error);
   }
+
+  void _startCooldown() {
+    cooldownSeconds = _cooldownDuration;
+    _cooldownTimer?.cancel();
+    _cooldownTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      if (cooldownSeconds > 0) {
+        cooldownSeconds--;
+        notifyListeners();
+      } else {
+        timer.cancel();
+      }
+    });
+  }
+
+  bool _isValidEmail(String email) => email.isNotEmpty && email.contains('@');
+
+  String _parseError(Object e) => e.toString().replaceAll('Exception: ', '');
 }

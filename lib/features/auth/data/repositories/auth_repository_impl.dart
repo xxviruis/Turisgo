@@ -4,9 +4,9 @@ import 'package:flutter_application_1/features/auth/domain/entities/user_entity.
 import 'package:flutter_application_1/features/auth/domain/repositories/auth_repository.dart';
 
 class AuthRepositoryImpl implements AuthRepository {
-  final AuthDAO dao;
+  const AuthRepositoryImpl(this.dao);
 
-  AuthRepositoryImpl(this.dao);
+  final AuthDAO dao;
 
   @override
   Future<void> login(String email, String password) async {
@@ -18,19 +18,31 @@ class AuthRepositoryImpl implements AuthRepository {
     await dao.signOut();
   }
 
+  /// Retorna el usuario autenticado con perfil completo,
+  /// o `null` si no hay sesión o el usuario está inactivo.
   @override
   Future<UserEntity?> getCurrentUser() async {
     final authUser = dao.getCurrentUser();
     if (authUser == null) return null;
 
-    final profile = await dao.getUserProfile(authUser.id);
-    if (profile == null) return null;
+    final profileData = await dao.getUserProfile(authUser.id);
+    if (profileData == null) return null;
 
-    final usuario = UsuarioModel.fromMap(profile);
-
-    if (!usuario.activo) return null; // 🔥 Bloqueo automático
+    final usuario = UsuarioModel.fromMap(profileData);
+    if (!usuario.activo) return null;
 
     return usuario;
+  }
+
+  @override
+  Future<void> sendPasswordResetCode(String email) async {
+    try {
+      await dao.sendOtp(email);
+    } catch (_) {
+      throw Exception(
+        'Error al enviar el código. Verifica tu correo o intenta más tarde.',
+      );
+    }
   }
 
   @override
@@ -39,23 +51,8 @@ class AuthRepositoryImpl implements AuthRepository {
     required String code,
     required String newPassword,
   }) async {
-    final response = await dao.verifyOTP(email, code);
-    if (response.session != null) {
-      await dao.updateUserPassword(newPassword);
-      await dao.signOut(); // Cerrar sesión después de cambiar la contraseña
-    } else {
-      // Si el código es incorrecto o expiró, lanzamos una excepción clara
-      throw Exception("El código de verificación es incorrecto o ha expirado.");
-    }
-  }
-
-  Future<void> sendPasswordResetCode(String email) async {
-    try {
-      // Supabase envía el código o link automáticamente al correo
-      await dao.sendResetPasswordEmail(email);
-    } catch (e) {
-      // Lanzamos el error para que el controlador lo capture en el catch y muestre el mensaje
-      throw Exception("Error al enviar el código: $e");
-    }
+    await dao.verifyOtp(email, code);
+    await dao.updateUserPassword(newPassword);
+    await dao.signOut();
   }
 }

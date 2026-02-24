@@ -1,9 +1,9 @@
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class AuthDAO {
-  final SupabaseClient client;
+  const AuthDAO(this.client);
 
-  AuthDAO(this.client);
+  final SupabaseClient client;
 
   Future<void> signIn(String email, String password) async {
     await client.auth.signInWithPassword(email: email, password: password);
@@ -13,33 +13,26 @@ class AuthDAO {
     await client.auth.signOut();
   }
 
-  User? getCurrentUser() {
-    return client.auth.currentUser;
-  }
+  User? getCurrentUser() => client.auth.currentUser;
 
   Future<Map<String, dynamic>?> getUserProfile(String userId) async {
-    return await client
-        .from('perfiles')
-        .select()
-        .eq('id', userId)
-        .maybeSingle();
+    return client.from('perfiles').select().eq('id', userId).maybeSingle();
   }
 
-  // Nuevo: Enviar el correo de recuperación
-  Future<void> sendResetPasswordEmail(String email) async {
-    await client.auth.resetPasswordForEmail(email);
+  /// Envía un OTP al correo sin crear un usuario nuevo.
+  Future<void> sendOtp(String email) async {
+    await client.auth.signInWithOtp(email: email, shouldCreateUser: false);
   }
 
-  // Nuevo: Verificar el token de 6 dígitos
-  Future<AuthResponse> verifyOTP(String email, String token) async {
-    return await client.auth.verifyOTP(
+  /// Verifica el OTP usando tipo [OtpType.email] (no recovery).
+  Future<AuthResponse> verifyOtp(String email, String token) async {
+    return client.auth.verifyOTP(
       email: email,
       token: token,
-      type: OtpType.recovery,
+      type: OtpType.email,
     );
   }
 
-  // Nuevo: Cambiar la contraseña (requiere sesión activa tras verifyOTP)
   Future<void> updateUserPassword(String newPassword) async {
     await client.auth.updateUser(UserAttributes(password: newPassword));
   }
