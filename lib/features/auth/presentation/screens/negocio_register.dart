@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:flutter_application_1/core/theme/app_spacing.dart';
 
 class RegisterNegocioPro extends StatefulWidget {
   const RegisterNegocioPro({super.key});
@@ -51,7 +52,7 @@ class _RegisterNegocioProState extends State<RegisterNegocioPro> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               _header(),
-              const SizedBox(height: 30),
+              AppSpacing.h30,
               _card(
                 title: "Tipo de negocio",
                 child: DropdownButtonFormField<String>(
@@ -68,7 +69,7 @@ class _RegisterNegocioProState extends State<RegisterNegocioPro> {
                   },
                 ),
               ),
-              const SizedBox(height: 25),
+              AppSpacing.h25,
               _card(
                 title: "Servicios",
                 child: Wrap(
@@ -90,13 +91,13 @@ class _RegisterNegocioProState extends State<RegisterNegocioPro> {
                   }).toList(),
                 ),
               ),
-              const SizedBox(height: 25),
+              AppSpacing.h25,
               _card(
                 title: "Precios",
                 child: Column(
                   children: [
                     ...precios.map((precio) => _precioItem(precio)),
-                    const SizedBox(height: 15),
+                    AppSpacing.h15,
                     if (tipoNegocio != null)
                       OutlinedButton.icon(
                         onPressed: () {
@@ -114,9 +115,9 @@ class _RegisterNegocioProState extends State<RegisterNegocioPro> {
                   ],
                 ),
               ),
-              const SizedBox(height: 40),
+              AppSpacing.h40,
               _submitButton(),
-              const SizedBox(height: 50),
+              AppSpacing.h50,
             ],
           ),
         ),
@@ -132,7 +133,7 @@ class _RegisterNegocioProState extends State<RegisterNegocioPro> {
           "Registrar Negocio",
           style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
         ).animate().fadeIn().slideX(begin: -0.2),
-        const SizedBox(height: 6),
+        AppSpacing.h6,
         const Text(
           "Configura tu negocio para hacerlo visible globalmente.",
           style: TextStyle(color: Colors.grey),
@@ -162,7 +163,7 @@ class _RegisterNegocioProState extends State<RegisterNegocioPro> {
             title,
             style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
           ),
-          const SizedBox(height: 15),
+          AppSpacing.h15,
           child,
         ],
       ),
@@ -188,7 +189,7 @@ class _RegisterNegocioProState extends State<RegisterNegocioPro> {
               },
             ),
           ),
-          const SizedBox(width: 10),
+          AppSpacing.h10,
           Expanded(
             child: TextFormField(
               decoration: _inputDecoration(hint: "Valor"),

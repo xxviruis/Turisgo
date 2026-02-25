@@ -1,5 +1,6 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/core/theme/app_spacing.dart';
 import 'package:flutter_application_1/core/widgets/custom_dialogs.dart';
 import 'package:flutter_application_1/core/widgets/custom_inputs.dart';
 import 'package:flutter_application_1/features/auth/presentation/controllers/forgot_password_controller.dart';
@@ -162,7 +163,7 @@ class _GlassCard extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               const Icon(Icons.lock_reset, size: 70, color: Color(0xFF4ECDC4)),
-              const SizedBox(height: 20),
+              AppSpacing.h20,
               const Text(
                 'Recuperar contraseña',
                 style: TextStyle(
@@ -171,7 +172,7 @@ class _GlassCard extends StatelessWidget {
                   color: Colors.white,
                 ),
               ),
-              const SizedBox(height: 30),
+              AppSpacing.h30,
               GlassInput(
                 controller: emailController,
                 hint: 'Correo electrónico',
@@ -179,20 +180,20 @@ class _GlassCard extends StatelessWidget {
                 enabled: !controller.isCodeSent,
               ),
               if (controller.isCodeSent) ...[
-                const SizedBox(height: 20),
+                AppSpacing.h20,
                 GlassInput(
                   controller: codeController,
                   hint: 'Código de 6 dígitos',
                   type: TextInputType.number,
                 ),
-                const SizedBox(height: 20),
+                AppSpacing.h20,
                 GlassInput(
                   controller: passwordController,
                   hint: 'Nueva contraseña',
                   obscure: true,
                 ),
               ],
-              const SizedBox(height: 30),
+              AppSpacing.h30,
               _SubmitButton(
                 controller: controller,
                 onSendCode: onSendCode,

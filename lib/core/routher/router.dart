@@ -4,7 +4,7 @@ import 'package:flutter_application_1/features/auth/domain/usecases/get_current_
 import 'package:flutter_application_1/features/auth/presentation/screens/forgot_password_screen.dart';
 import 'package:flutter_application_1/features/auth/presentation/screens/login.dart';
 import 'package:flutter_application_1/features/principal/principal_screens/principal.dart';
-import 'package:flutter_application_1/features/usuario/presentation/screen_usuario.dart';
+import 'package:flutter_application_1/features/usuario/presentation/screen_usuario_turista.dart';
 import 'package:go_router/go_router.dart';
 
 // 🔹 Importa tus pantallas reales aquí
