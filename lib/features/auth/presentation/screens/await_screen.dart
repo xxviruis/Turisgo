@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_application_1/core/theme/app_spacing.dart';
 import 'package:flutter_application_1/features/auth/data/services/loginservices.dart';
 import 'package:flutter_application_1/core/theme/colors.dart'; // Tus constantes de color
-import 'package:flutter_application_1/features/usuario/presentation/screen_usuario.dart';
+import 'package:flutter_application_1/features/usuario/presentation/screen_usuario_turista.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class AwaitConfirm extends StatefulWidget {

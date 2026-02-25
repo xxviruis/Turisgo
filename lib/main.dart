@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/core/routher/auth_notifier.dart';
 import 'package:flutter_application_1/core/routher/router.dart';
 import 'package:flutter_application_1/features/auth/domain/usecases/get_current_user_usecase.dart';
 import 'package:flutter_application_1/features/auth/domain/usecases/login_usecase.dart';
+import 'package:flutter_application_1/features/auth/domain/usecases/send_otp_usecase.dart';
+import 'package:flutter_application_1/features/auth/domain/usecases/verify_otp_usecase.dart';
+import 'package:flutter_application_1/features/auth/presentation/controllers/forgot_password_controller.dart';
 import 'package:provider/provider.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_application_1/l10n/generated/app_localizations.dart';
-
 // AUTH
 import 'features/auth/data/datasource/auth_dao.dart';
 import 'features/auth/data/repositories/auth_repository_impl.dart';
@@ -39,8 +42,17 @@ Future<void> main() async {
         Provider<GetCurrentUserUseCase>.value(value: getCurrentUserUseCase),
 
         ChangeNotifierProvider(
+          create: (_) => ForgotPasswordController(
+            sendOtpUseCase: SendOtpUseCase(authRepository),
+            verifyOtpUseCase: VerifyOtpUseCase(authRepository),
+          ),
+        ),
+
+        ChangeNotifierProvider(
           create: (_) => AdminProvider(repository: SupabaseAdminService()),
         ),
+
+        ChangeNotifierProvider(create: (_) => AuthNotifier()),
       ],
       child: const Principal(),
     ),
@@ -52,7 +64,11 @@ class Principal extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final router = createRouter(context);
+    final getCurrentUserUseCase = context.read<GetCurrentUserUseCase>();
+
+    final authNotifier = context.read<AuthNotifier>();
+
+    final router = createRouter(getCurrentUserUseCase, authNotifier);
 
     return MaterialApp.router(
       routerConfig: router,
