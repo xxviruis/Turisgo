@@ -22,7 +22,7 @@ class LogoSection extends StatelessWidget {
               shape: BoxShape.circle,
               boxShadow: [
                 BoxShadow(
-                  color: kTealColor.withOpacity(0.2),
+                  color: Colors.white.withOpacity(0.7),
                   blurRadius: 15,
                   offset: const Offset(0, 8),
                 ),
@@ -41,7 +41,7 @@ class LogoSection extends StatelessWidget {
           style: TextStyle(
             fontSize: 34,
             fontWeight: FontWeight.w900,
-            color: kTealColor,
+            color: Color.fromARGB(135, 12, 189, 136),
             letterSpacing: -0.5,
           ),
         ),
@@ -49,7 +49,7 @@ class LogoSection extends StatelessWidget {
         Text(
           'Explora el mundo con nosotros',
           style: TextStyle(
-            color: Colors.blueGrey.shade400,
+            color: const Color.fromARGB(176, 255, 255, 255),
             fontSize: 15,
             fontWeight: FontWeight.w500,
           ),
@@ -74,7 +74,10 @@ class EmailField extends StatelessWidget {
       controller: controller,
       keyboardType: TextInputType.emailAddress,
       textInputAction: TextInputAction.next,
-      style: const TextStyle(fontWeight: FontWeight.w500),
+      style: const TextStyle(
+        fontWeight: FontWeight.w500,
+        color: Color.fromARGB(255, 0, 255, 179),
+      ),
       decoration: buildLoginInputDecoration(
         label: 'Correo Electrónico',
         icon: Icons.email_outlined,
@@ -108,7 +111,7 @@ class PasswordField extends StatelessWidget {
     return TextFormField(
       controller: controller,
       obscureText: isHidden,
-      style: const TextStyle(fontWeight: FontWeight.w500),
+      style: const TextStyle(fontWeight: FontWeight.w500, color: Colors.white),
       decoration: buildLoginInputDecoration(
         label: 'Contraseña',
         icon: Icons.lock_outline,
@@ -166,8 +169,8 @@ class LoginButton extends StatelessWidget {
         ),
         child: Ink(
           decoration: BoxDecoration(
-            gradient: LinearGradient(colors: [kTealColor, kMintColor]),
-            borderRadius: BorderRadius.circular(14),
+            color: Color.fromARGB(135, 12, 189, 136),
+            borderRadius: BorderRadius.circular(12),
           ),
           child: Container(
             alignment: Alignment.center,
@@ -207,21 +210,21 @@ InputDecoration buildLoginInputDecoration({
   return InputDecoration(
     labelText: label,
     labelStyle: TextStyle(
-      color: kTealColor.withOpacity(0.8),
+      color: Colors.white.withOpacity(0.7),
       fontWeight: FontWeight.w500,
     ),
-    prefixIcon: Icon(icon, color: kTealColor),
+    prefixIcon: Icon(icon, color: Colors.white.withOpacity(0.6)),
     suffixIcon: suffixIcon,
     filled: true,
-    fillColor: kWhiteColor.withOpacity(0.6),
+    fillColor: Colors.black.withOpacity(0.35),
     contentPadding: const EdgeInsets.symmetric(vertical: 16, horizontal: 18),
     enabledBorder: OutlineInputBorder(
-      borderRadius: BorderRadius.circular(14),
-      borderSide: BorderSide(color: kTealColor.withOpacity(0.15), width: 1.2),
+      borderRadius: BorderRadius.circular(12),
+      borderSide: BorderSide(color: Colors.white.withOpacity(0.1)),
     ),
     focusedBorder: OutlineInputBorder(
-      borderRadius: BorderRadius.circular(14),
-      borderSide: const BorderSide(color: kTealColor, width: 1.8),
+      borderRadius: BorderRadius.circular(12),
+      borderSide: BorderSide(color: kTealColor, width: 1.5),
     ),
     errorBorder: OutlineInputBorder(
       borderRadius: BorderRadius.circular(14),
