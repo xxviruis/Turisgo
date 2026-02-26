@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/core/theme/colors.dart';
 
 // Este es público, perfecto.
 class GradientBackground extends StatelessWidget {

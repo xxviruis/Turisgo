@@ -18,34 +18,60 @@ class AnimatedFormCard extends StatelessWidget {
           child: Opacity(opacity: value, child: animationChild),
         );
       },
-      child: Container(
-        constraints: const BoxConstraints(maxWidth: 400),
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(22),
-          child: BackdropFilter(
-            filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
+
+      /// 👇 AQUÍ está la parte responsive
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          double cardWidth;
+
+          if (constraints.maxWidth < 600) {
+            // 📱 Mobile
+            cardWidth = constraints.maxWidth * 0.9;
+          } else if (constraints.maxWidth < 1024) {
+            // 📲 Tablet
+            cardWidth = 500;
+          } else {
+            // 💻 Desktop
+            cardWidth = 420;
+          }
+
+          return Center(
             child: Container(
-              padding: const EdgeInsets.symmetric(vertical: 45, horizontal: 30),
-              decoration: BoxDecoration(
-                color: kWhiteColor.withOpacity(0.82),
+              width: cardWidth,
+              constraints: const BoxConstraints(minHeight: 350),
+              child: ClipRRect(
                 borderRadius: BorderRadius.circular(22),
-                border: Border.all(
-                  color: kWhiteColor.withOpacity(0.5),
-                  width: 1,
-                ),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.08),
-                    blurRadius: 25,
-                    offset: const Offset(0, 12),
+                child: BackdropFilter(
+                  filter: ImageFilter.blur(sigmaX: 18, sigmaY: 18),
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                      vertical: 45,
+                      horizontal: 30,
+                    ),
+                    decoration: BoxDecoration(
+                      color: Colors.black.withOpacity(
+                        0.45,
+                      ), // oscuro translúcido
+                      borderRadius: BorderRadius.circular(20),
+                      border: Border.all(
+                        color: Colors.white.withOpacity(0.1),
+                        width: 1,
+                      ),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.08),
+                          blurRadius: 25,
+                          offset: const Offset(0, 12),
+                        ),
+                      ],
+                    ),
+                    child: child,
                   ),
-                ],
+                ),
               ),
-  
-              child: child,
             ),
-          ),
-        ),
+          );
+        },
       ),
     );
   }

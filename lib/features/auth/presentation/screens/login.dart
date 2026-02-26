@@ -86,7 +86,6 @@ class _LoginState extends State<Login> {
                 child: Form(
                   key: _formKey,
                   child: Column(
-                    mainAxisSize: MainAxisSize.min,
                     children: [
                       const LogoSection(),
                       AppSpacing.h35,
