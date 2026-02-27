@@ -3,6 +3,7 @@ import 'package:flutter_application_1/features/admin/presentation/admin_screens/
 import 'package:flutter_application_1/features/auth/domain/usecases/get_current_user_usecase.dart';
 import 'package:flutter_application_1/features/auth/presentation/screens/forgot_password_screen.dart';
 import 'package:flutter_application_1/features/auth/presentation/screens/login.dart';
+import 'package:flutter_application_1/features/auth/presentation/screens/register.dart';
 import 'package:flutter_application_1/features/principal/principal_screens/principal.dart';
 import 'package:flutter_application_1/features/usuario/presentation/screen_usuario_turista.dart';
 import 'package:go_router/go_router.dart';
@@ -23,6 +24,7 @@ GoRouter createRouter(
       final isPublicRoute =
           location == '/' ||
           location == '/login' ||
+          location == '/register' ||
           location == '/forgot-password';
 
       if (user == null) {
@@ -30,7 +32,7 @@ GoRouter createRouter(
       }
 
       if (!user.activo) {
-        return '/login';
+        return '/';
       }
 
       if (user.rol == 'admin') {
@@ -65,6 +67,10 @@ GoRouter createRouter(
       GoRoute(
         path: '/admin',
         builder: (context, state) => const AdminDashboard(),
+      ),
+      GoRoute(
+        path: '/register',
+        builder: (context, state) => const Registrarse(),
       ),
     ],
   );

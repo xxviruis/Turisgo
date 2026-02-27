@@ -8,6 +8,7 @@ import 'package:flutter_application_1/features/auth/data/services/loginservices.
 import 'package:flutter_application_1/features/auth/presentation/widgets/app_inputs.dart';
 import 'package:flutter_application_1/core/theme/colors.dart';
 import 'package:flutter_application_1/core/theme/visual_utils.dart';
+import 'package:go_router/go_router.dart';
 
 class Registrarse extends StatefulWidget {
   const Registrarse({super.key});
@@ -112,7 +113,8 @@ class _RegistrarseState extends State<Registrarse>
             left: 20,
             child: IconButton(
               icon: const Icon(Icons.arrow_back_ios_new, color: kWhiteColor),
-              onPressed: () => Navigator.maybePop(context),
+              onPressed: () =>
+                  context.go('/'), // Usamos GoRouter para navegación
             ),
           ),
 

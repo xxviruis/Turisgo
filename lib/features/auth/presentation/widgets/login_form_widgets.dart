@@ -74,10 +74,7 @@ class EmailField extends StatelessWidget {
       controller: controller,
       keyboardType: TextInputType.emailAddress,
       textInputAction: TextInputAction.next,
-      style: const TextStyle(
-        fontWeight: FontWeight.w500,
-        color: Color.fromARGB(255, 0, 255, 179),
-      ),
+      style: const TextStyle(fontWeight: FontWeight.w500, color: Colors.white),
       decoration: buildLoginInputDecoration(
         label: 'Correo Electrónico',
         icon: Icons.email_outlined,
@@ -257,8 +254,7 @@ class LoginBackButton extends StatelessWidget {
               color: kWhiteColor,
               size: 22,
             ),
-            onPressed: () =>
-                Navigator.of(context).pop(), // O context.pop() si usas GoRouter
+            onPressed: () => context.go('/'),
             tooltip: 'Regresar',
           ),
         ),
