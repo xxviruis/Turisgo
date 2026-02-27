@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/features/auth/domain/repositories/admin_repository.dart';
-import 'package:flutter_application_1/features/usuario/data/models/negocio_model.dart';
+import 'package:flutter_application_1/features/negocio_admin/domain/entities/negocio.dart';
 
 class AdminProvider extends ChangeNotifier {
   final IAdminRepository repository;

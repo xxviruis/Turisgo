@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_application_1/features/admin/presentation/admin_screens/edit_negocios_screens.dart';
 import 'package:flutter_application_1/features/usuario/domain/usecases/admin/admin_provider.dart';
 import 'package:flutter_application_1/core/widgets/danger_sheets.dart';
-import 'package:flutter_application_1/features/usuario/data/models/negocio_model.dart';
+import 'package:flutter_application_1/features/negocio_admin/domain/entities/negocio.dart';
 import 'package:provider/provider.dart';
 
 class AdminNegociosScreen extends StatelessWidget {
@@ -72,7 +72,7 @@ class AdminNegociosScreen extends StatelessWidget {
             children: [
               const SizedBox(height: 4),
               Text(
-                negocio.tipo,
+                negocio.tipoId.toString(),
                 style: TextStyle(color: Colors.grey[600], fontSize: 12),
               ),
               Text(

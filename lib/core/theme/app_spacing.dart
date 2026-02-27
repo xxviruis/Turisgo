@@ -4,6 +4,7 @@ class AppSpacing {
   static const SizedBox h10 = SizedBox(height: 10);
   static const SizedBox h5 = SizedBox(height: 5);
   static const SizedBox h6 = SizedBox(height: 6);
+  static const SizedBox h12 = SizedBox(height: 12);
   static const SizedBox h15 = SizedBox(height: 15);
   static const SizedBox h16 = SizedBox(height: 16);
   static const SizedBox h18 = SizedBox(height: 18);

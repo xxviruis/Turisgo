@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/features/usuario/data/models/negocio_model.dart';
+import 'package:flutter_application_1/features/negocio_admin/domain/entities/negocio.dart';
 
 class EditNegocioForm extends StatefulWidget {
   final Negocio negocio;
@@ -109,15 +109,17 @@ class _EditNegocioFormState extends State<EditNegocioForm> {
         id: widget.negocio.id,
         nombre: _nombreCtrl.text,
         descripcion: _descCtrl.text,
-        tipo: widget.negocio.tipo, // Mantener igual o añadir selector
+        tipoId: widget.negocio.tipoId, // Mantener igual o añadir selector
         direccion: widget.negocio.direccion,
         ciudad: _ciudadCtrl.text,
-        latitud: widget.negocio.latitud,
-        longitud: widget.negocio.longitud,
         telefono: _telCtrl.text,
         emailNegocio: _emailCtrl.text,
         imagenes: widget.negocio.imagenes,
         propietarioId: widget.negocio.propietarioId,
+        createdAt: widget.negocio.createdAt,
+        puntuacion: widget.negocio.puntuacion,
+        amenidades: [],
+        metodosPago: [],
       );
 
       widget.onSave(updatedNegocio);

@@ -45,20 +45,28 @@ class _PantallaPrincipalState extends State<PantallaPrincipal> {
     return Scaffold(
       backgroundColor: const Color(0xFFF8FBFB), // Fondo limpio y moderno
       appBar: AppBar(
-        title: const Text(
-          'TURISGO',
-          style: TextStyle(
-            fontWeight: FontWeight.w900,
-            letterSpacing: 1.5,
-            color: kWhiteColor,
-          ),
-        ),
-        centerTitle:
-            false, // Alineado a la izquierda da un toque más moderno de app
+        toolbarHeight: 160, // 👈 AppBar pequeño
         elevation: 0,
+        backgroundColor: Colors.transparent,
+        titleSpacing: 0,
+
         flexibleSpace: Container(
-          decoration: const BoxDecoration(
-            gradient: kMainGradient, // Aplicamos tu paleta
+          decoration: const BoxDecoration(gradient: kMainGradient),
+          child: Stack(
+            clipBehavior: Clip.none, // 🔥 permite que el logo sobresalga
+            children: [
+              // LOGO GRANDE
+              Positioned(
+                left: 635,
+                top: -20,
+                bottom: -35, // 👈 hace que el logo sobresalga
+                child: Image.asset(
+                  'assets/images/logo.png',
+                  height: 230, // 👈 logo grande
+                  filterQuality: FilterQuality.high,
+                ),
+              ),
+            ],
           ),
         ),
         actions: [
@@ -144,10 +152,8 @@ class _PantallaPrincipalState extends State<PantallaPrincipal> {
       padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 10),
       child: TextButton(
         style: TextButton.styleFrom(
-          backgroundColor: isPrimary ? kPeachColor : Colors.transparent,
-          side: isPrimary
-              ? BorderSide.none
-              : const BorderSide(color: kWhiteColor, width: 1.5),
+          backgroundColor: isPrimary ? kPeachColor : kTealColor,
+          side: isPrimary ? BorderSide.none : BorderSide.none,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),
           ),
