@@ -11,6 +11,7 @@ import 'package:flutter_application_1/features/principal/principal_screens/motel
 import 'package:flutter_application_1/features/principal/principal_screens/paquetes_carrusel.dart';
 import 'package:flutter_application_1/features/principal/principal_screens/restaurante_carrusel.dart';
 import 'package:flutter_application_1/l10n/generated/app_localizations.dart';
+import 'package:go_router/go_router.dart';
 
 class PantallaPrincipal extends StatefulWidget {
   const PantallaPrincipal({super.key});
@@ -73,19 +74,15 @@ class _PantallaPrincipalState extends State<PantallaPrincipal> {
           // Botón Secundario (Iniciar Sesión)
           _buildAppBarButton(
             text: l10n.iniciarSesion,
-            onPressed: () => Navigator.push(
-              context,
-              MaterialPageRoute(builder: (_) => const Login()),
-            ),
+            onPressed: () =>
+                context.go('/login'), // Usamos GoRouter para navegación
             isPrimary: false,
           ),
           // Botón Primario (Registrarse) - Resalta más
           _buildAppBarButton(
             text: l10n.registrarse,
-            onPressed: () => Navigator.push(
-              context,
-              MaterialPageRoute(builder: (_) => const Registrarse()),
-            ),
+            onPressed: () =>
+                context.go('/register'), // Usamos GoRouter para navegación
             isPrimary: true,
           ),
           const SizedBox(width: 8), // Margen final
