@@ -3,12 +3,12 @@ import 'package:intl/intl.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 class BookingCalendar extends StatefulWidget {
-  final Map<String, int> precios;
+  final int precioBase;
   final Function(DateTime?, DateTime?, int, double) onChanged;
 
   const BookingCalendar({
     super.key,
-    required this.precios,
+    required this.precioBase,
     required this.onChanged,
   });
 
@@ -20,17 +20,15 @@ class BookingCalendarState extends State<BookingCalendar> {
   DateTime? _inicio;
   DateTime? _fin;
 
-  DateTime get _hoy {
-    final now = DateTime.now();
-    return DateTime(now.year, now.month, now.day);
-  }
+  // 🔒 RANGO PERMITIDO
+  final DateTime _fechaInicio = DateTime(2026, 2, 26);
+  final DateTime _fechaFin = DateTime(2026, 4, 20);
 
-  late DateTime _focusedDay = _hoy;
+  late DateTime _focusedDay = _fechaInicio;
 
   @override
   void initState() {
     super.initState();
-    // 🔥 Ningún día seleccionado al iniciar
     _inicio = null;
     _fin = null;
   }
@@ -40,7 +38,7 @@ class BookingCalendarState extends State<BookingCalendar> {
     setState(() {
       _inicio = null;
       _fin = null;
-      _focusedDay = _hoy;
+      _focusedDay = _fechaInicio;
     });
 
     widget.onChanged(null, null, 0, 0);
@@ -56,18 +54,20 @@ class BookingCalendarState extends State<BookingCalendar> {
         child: TableCalendar(
           locale: 'es_ES',
           focusedDay: _focusedDay,
-
-          // 🔥 Bloquea días pasados, permite hoy
-          firstDay: _hoy,
-          lastDay: DateTime(2027, 12, 31),
+          firstDay: _fechaInicio,
+          lastDay: _fechaFin,
 
           rangeSelectionMode: RangeSelectionMode.enforced,
           rangeStartDay: _inicio,
           rangeEndDay: _fin,
 
+          // 🔥 CLAVE: ningún día seleccionado cuando se limpian fechas
+          selectedDayPredicate: (day) {
+            return false;
+          },
+
           enabledDayPredicate: (day) {
-            final d = DateTime(day.year, day.month, day.day);
-            return !d.isBefore(_hoy);
+            return !day.isBefore(_fechaInicio) && !day.isAfter(_fechaFin);
           },
 
           headerStyle: const HeaderStyle(
@@ -75,21 +75,16 @@ class BookingCalendarState extends State<BookingCalendar> {
             formatButtonVisible: false,
           ),
 
-          // ❌ SIN todayDecoration → hoy no se pinta
           calendarStyle: const CalendarStyle(
             disabledTextStyle: TextStyle(color: Colors.grey),
           ),
 
           calendarBuilders: CalendarBuilders(
-            // 🔥 Hoy se pinta igual que un día normal
             todayBuilder: (context, day, _) {
               return _buildDay(day);
             },
-
             defaultBuilder: (context, day, _) {
-              final d = DateTime(day.year, day.month, day.day);
-
-              if (d.isBefore(_hoy)) {
+              if (day.isBefore(_fechaInicio) || day.isAfter(_fechaFin)) {
                 return Center(
                   child: Text(
                     '${day.day}',
@@ -97,7 +92,6 @@ class BookingCalendarState extends State<BookingCalendar> {
                   ),
                 );
               }
-
               return _buildDay(day);
             },
           ),
@@ -116,31 +110,32 @@ class BookingCalendarState extends State<BookingCalendar> {
     );
   }
 
+  // 🔥 Precio dinámico por día (fin de semana más caro)
+  int _precioPorDia(DateTime day) {
+    final bool esFinDeSemana =
+        day.weekday == DateTime.friday || day.weekday == DateTime.saturday;
+
+    return esFinDeSemana
+        ? (widget.precioBase * 1.15).round()
+        : widget.precioBase;
+  }
+
   Widget _buildDay(DateTime day) {
-    final key = DateFormat('yyyy-MM-dd').format(day);
-    final precio = widget.precios[key];
+    final precio = _precioPorDia(day);
 
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
+        Text('${day.day}', style: const TextStyle(fontWeight: FontWeight.bold)),
+        const SizedBox(height: 4),
         Text(
-          '${day.day}',
-          style: const TextStyle(fontWeight: FontWeight.bold),
+          NumberFormat.currency(
+            locale: "es_CO",
+            symbol: "",
+            decimalDigits: 0,
+          ).format(precio),
+          style: const TextStyle(fontSize: 11, color: Colors.green),
         ),
-        if (precio != null) ...[
-          const SizedBox(height: 4),
-          Text(
-            NumberFormat.currency(
-              locale: "es_CO",
-              symbol: "",
-              decimalDigits: 0,
-            ).format(precio),
-            style: const TextStyle(
-              fontSize: 11,
-              color: Colors.green,
-            ),
-          ),
-        ],
       ],
     );
   }
@@ -156,8 +151,7 @@ class BookingCalendarState extends State<BookingCalendar> {
 
     DateTime d = _inicio!;
     while (d.isBefore(_fin!)) {
-      final key = DateFormat('yyyy-MM-dd').format(d);
-      total += widget.precios[key] ?? 0;
+      total += _precioPorDia(d);
       noches++;
       d = d.add(const Duration(days: 1));
     }

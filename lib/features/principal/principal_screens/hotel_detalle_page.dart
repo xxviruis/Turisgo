@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/core/widgets/mapa_hotel.dart';
 import 'package:flutter_application_1/features/usuario/presentation/widgets/booking_calendar.dart';
 import 'package:flutter_application_1/features/usuario/presentation/widgets/booking_price_box.dart';
 import 'package:flutter_application_1/core/utils/servicios_icons.dart';
@@ -17,7 +18,6 @@ class _HotelDetallePageState extends State<HotelDetallePage> {
   double total = 0;
   final GlobalKey<BookingCalendarState> _calendarKey = GlobalKey();
 
-  // ✅ Limpia noches y total
   void _clearBooking() {
     setState(() {
       noches = 0;
@@ -30,10 +30,9 @@ class _HotelDetallePageState extends State<HotelDetallePage> {
     final hotel = widget.hotel;
 
     final List<String> imagenes = List<String>.from(hotel["imagenes"] ?? []);
-
     final List<String> servicios = List<String>.from(hotel["servicios"] ?? []);
-
     final String descripcion = hotel["descripcion"] ?? "Sin descripción";
+    final String direccion = hotel["direccion"] ?? "";
 
     while (imagenes.length < 8) {
       imagenes.add(imagenes.isNotEmpty ? imagenes[0] : hotel["img"]);
@@ -183,18 +182,49 @@ class _HotelDetallePageState extends State<HotelDetallePage> {
 
                     const SizedBox(height: 32),
 
-                    // ================= DESCRIPCIÓN =================
-                    const Text(
-                      "Descripción",
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    Text(
-                      descripcion,
-                      style: const TextStyle(fontSize: 16, height: 1.5),
+                    // ================= DESCRIPCIÓN + MAPA =================
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        // TEXTO IZQUIERDA
+                        Expanded(
+                          flex: 6,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Text(
+                                "Descripción",
+                                style: TextStyle(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              const SizedBox(height: 8),
+                              Text(
+                                descripcion,
+                                style: const TextStyle(
+                                  fontSize: 16,
+                                  height: 1.5,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+
+                        const SizedBox(width: 32),
+
+                        // MAPA DERECHA
+                        Expanded(
+                          flex: 4,
+                          child: SizedBox(
+                            height: 360,
+                            child: MapaHotel(
+                              nombreHotel: hotel["nombre"],
+                              direccion: hotel["direccion"],
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
 
                     const SizedBox(height: 40),
@@ -205,14 +235,11 @@ class _HotelDetallePageState extends State<HotelDetallePage> {
                       children: [
                         Expanded(
                           child: BookingCalendar(
-                            key: _calendarKey,
-                            precios: Map<String, int>.from(
-                              hotel["precios"] ?? {},
-                            ),
-                            onChanged: (ini, fin, n, t) {
+                            precioBase: hotel["precioBase"],
+                            onChanged: (ini, fin, noches, total) {
                               setState(() {
-                                noches = n;
-                                total = t;
+                                this.noches = noches;
+                                this.total = total;
                               });
                             },
                           ),
@@ -222,8 +249,7 @@ class _HotelDetallePageState extends State<HotelDetallePage> {
                           noches: noches,
                           total: total,
                           onClearDates: () {
-                            _calendarKey.currentState
-                                ?.limpiarFechas(); // 🔥 limpia visual
+                            _calendarKey.currentState?.limpiarFechas();
                             setState(() {
                               noches = 0;
                               total = 0;
