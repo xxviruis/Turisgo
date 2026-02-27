@@ -28,6 +28,8 @@ dependencies:
   shared_preferences: ^2.3.2
   table_calendar: ^3.1.0
   provider: ^6.1.5+1
+  google_maps_flutter: ^2.5.0
+  geocoding: ^2.1.1
 
 dev_dependencies:
   flutter_test:
@@ -55,4 +57,4 @@ flutter:
     - assets/images/hoteles/sonesta_bogota/
     - assets/images/hoteles/suma_wasi/
     - assets/images/hoteles/sonesta_ibague/
-    - assets/images/plane.png
+    - assets/images/logo.png

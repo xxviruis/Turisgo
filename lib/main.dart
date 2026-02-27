@@ -6,6 +6,14 @@ import 'package:flutter_application_1/features/auth/domain/usecases/login_usecas
 import 'package:flutter_application_1/features/auth/domain/usecases/send_otp_usecase.dart';
 import 'package:flutter_application_1/features/auth/domain/usecases/verify_otp_usecase.dart';
 import 'package:flutter_application_1/features/auth/presentation/controllers/forgot_password_controller.dart';
+import 'package:flutter_application_1/features/negocio_admin/data/datasource/ciudad_supabase_datasource.dart';
+import 'package:flutter_application_1/features/negocio_admin/data/datasource/negocio_supabase_datasource.dart';
+import 'package:flutter_application_1/features/negocio_admin/data/repositories/ciudad_repository_impl.dart';
+import 'package:flutter_application_1/features/negocio_admin/data/repositories/negocio_repository_impl.dart';
+import 'package:flutter_application_1/features/negocio_admin/data/repositories/tipo_negocio_repository_impl.dart';
+import 'package:flutter_application_1/features/negocio_admin/domain/usecases/crear_negocio_usecase.dart';
+import 'package:flutter_application_1/features/negocio_admin/presentation/controller/registrar_negocio_controller.dart';
+import 'package:flutter_application_1/features/negocio_admin/presentation/pages/registrar_negocio_page.dart';
 import 'package:provider/provider.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -46,10 +54,6 @@ Future<void> main() async {
             sendOtpUseCase: SendOtpUseCase(authRepository),
             verifyOtpUseCase: VerifyOtpUseCase(authRepository),
           ),
-        ),
-
-        ChangeNotifierProvider(
-          create: (_) => AdminProvider(repository: SupabaseAdminService()),
         ),
 
         ChangeNotifierProvider(create: (_) => AuthNotifier()),
