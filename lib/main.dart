@@ -1,11 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/core/routher/auth_notifier.dart';
-import 'package:flutter_application_1/core/routher/router.dart';
-import 'package:flutter_application_1/features/auth/domain/usecases/get_current_user_usecase.dart';
-import 'package:flutter_application_1/features/auth/domain/usecases/login_usecase.dart';
-import 'package:flutter_application_1/features/auth/domain/usecases/send_otp_usecase.dart';
-import 'package:flutter_application_1/features/auth/domain/usecases/verify_otp_usecase.dart';
-import 'package:flutter_application_1/features/auth/presentation/controllers/forgot_password_controller.dart';
 import 'package:flutter_application_1/features/negocio_admin/data/datasource/ciudad_supabase_datasource.dart';
 import 'package:flutter_application_1/features/negocio_admin/data/datasource/negocio_supabase_datasource.dart';
 import 'package:flutter_application_1/features/negocio_admin/data/repositories/ciudad_repository_impl.dart';
@@ -16,15 +9,6 @@ import 'package:flutter_application_1/features/negocio_admin/presentation/contro
 import 'package:flutter_application_1/features/negocio_admin/presentation/pages/registrar_negocio_page.dart';
 import 'package:provider/provider.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:flutter_application_1/l10n/generated/app_localizations.dart';
-// AUTH
-import 'features/auth/data/datasource/auth_dao.dart';
-import 'features/auth/data/repositories/auth_repository_impl.dart';
-
-// ADMIN
-import 'features/auth/data/services/supabase_service_admin.dart';
-import 'features/usuario/domain/usecases/admin/admin_provider.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -37,54 +21,31 @@ Future<void> main() async {
 
   final supabaseClient = Supabase.instance.client;
 
-  // 🔹 AUTH
-  final authDAO = AuthDAO(supabaseClient);
-  final authRepository = AuthRepositoryImpl(authDAO);
-  final loginUseCase = LoginUseCase(authRepository);
-  final getCurrentUserUseCase = GetCurrentUserUseCase(authRepository);
+  // Data sources
+  final ciudadDatasource = CiudadSupabaseDataSource(supabaseClient);
+  final negocioDatasource = NegocioSupabaseDataSource(supabaseClient);
+
+  // Repositories
+  final ciudadRepository = CiudadRepositoryImpl(ciudadDatasource);
+  final negocioRepository = NegocioRepositoryImpl(negocioDatasource);
+  final tipoNegocioRepository = TipoNegocioRepositoryImpl(
+    negocioDatasource,
+  ); // Si tiene datasource propio
+
+  // UseCase
+  final crearNegocioUseCase = CrearNegocioUseCase(negocioRepository);
 
   runApp(
     MultiProvider(
       providers: [
-        Provider<LoginUseCase>.value(value: loginUseCase),
-        Provider<GetCurrentUserUseCase>.value(value: getCurrentUserUseCase),
-
         ChangeNotifierProvider(
-          create: (_) => ForgotPasswordController(
-            sendOtpUseCase: SendOtpUseCase(authRepository),
-            verifyOtpUseCase: VerifyOtpUseCase(authRepository),
-          ),
+          create: (_) => RegistrarNegocioController(crearNegocioUseCase),
         ),
-
-        ChangeNotifierProvider(create: (_) => AuthNotifier()),
       ],
-      child: const Principal(),
+      child: const MaterialApp(
+        debugShowCheckedModeBanner: false,
+        home: RegistrarNegocioPage(),
+      ),
     ),
   );
-}
-
-class Principal extends StatelessWidget {
-  const Principal({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    final getCurrentUserUseCase = context.read<GetCurrentUserUseCase>();
-
-    final authNotifier = context.read<AuthNotifier>();
-
-    final router = createRouter(getCurrentUserUseCase, authNotifier);
-
-    return MaterialApp.router(
-      routerConfig: router,
-      locale: const Locale('es'),
-      localizationsDelegates: const [
-        AppLocalizations.delegate,
-        GlobalMaterialLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-        GlobalCupertinoLocalizations.delegate,
-      ],
-      supportedLocales: AppLocalizations.supportedLocales,
-      debugShowCheckedModeBanner: false,
-    );
-  }
 }
