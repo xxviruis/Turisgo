@@ -39,7 +39,11 @@ Future<void> main() async {
     MultiProvider(
       providers: [
         ChangeNotifierProvider(
-          create: (_) => RegistrarNegocioController(crearNegocioUseCase),
+          create: (_) => RegistrarNegocioController(
+            crearNegocioUseCase,
+            tipoNegocioRepository,
+            ciudadRepository,
+          ),
         ),
       ],
       child: const MaterialApp(
